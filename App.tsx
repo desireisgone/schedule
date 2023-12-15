@@ -20,6 +20,7 @@ import {
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { NavigationContainer } from '@react-navigation/native';
 import Main from './components/Main';
+import Search from './components/Search';
 
 import {
   Colors,
@@ -74,11 +75,11 @@ function App(): React.JSX.Element {
         <Tab.Screen name='edit' component={Main} options={{ tabBarIcon: (info) => {
           return <Image style={{ width: 30, height: 30, margin: 10 }} source={ (info.focused) ? require("./assets/editChosen.png") : require("./assets/edit.png")}/>
         } }}/>
+        <Tab.Screen name='search' component={Search} options={{ tabBarIcon: (info) => {
+          return <Image style={{ width: 30, height: 30, margin: 10 }} source={ (info.focused) ? require("./assets/searchChosen.png") : require("./assets/search.png")}/>
+        } }}/>
         <Tab.Screen name='profile' component={Main} options={{ tabBarIcon: (info) => {
           return <Image style={{ width: 30, height: 30, margin: 10 }} source={ (info.focused) ? require("./assets/profileChosen.png") : require("./assets/profile.png")}/>
-        } }}/>
-        <Tab.Screen name='search' component={Main} options={{ tabBarIcon: (info) => {
-          return <Image style={{ width: 30, height: 30, margin: 10 }} source={ (info.focused) ? require("./assets/searchChosen.png") : require("./assets/search.png")}/>
         } }}/>
       </Tab.Navigator>
     </NavigationContainer>
