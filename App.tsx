@@ -15,7 +15,11 @@ import {
   Text,
   useColorScheme,
   View,
+  Image,
 } from 'react-native';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { NavigationContainer } from '@react-navigation/native';
+import Main from './components/Main';
 
 import {
   Colors,
@@ -24,6 +28,7 @@ import {
   LearnMoreLinks,
   ReloadInstructions,
 } from 'react-native/Libraries/NewAppScreen';
+import { globalStyles } from './styles/style';
 
 type SectionProps = PropsWithChildren<{
   title: string;
@@ -55,44 +60,28 @@ function Section({children, title}: SectionProps): React.JSX.Element {
   );
 }
 
+const Tab = createBottomTabNavigator();
+
 function App(): React.JSX.Element {
-  const isDarkMode = useColorScheme() === 'dark';
-
-  const backgroundStyle = {
-    backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
-  };
-
   return (
-    <SafeAreaView style={backgroundStyle}>
-      <StatusBar
-        barStyle={isDarkMode ? 'light-content' : 'dark-content'}
-        backgroundColor={backgroundStyle.backgroundColor}
-      />
-      <ScrollView
-        contentInsetAdjustmentBehavior="automatic"
-        style={backgroundStyle}>
-        <Header />
-        <View
-          style={{
-            backgroundColor: isDarkMode ? Colors.black : Colors.white,
-          }}>
-          <Section title="Step One">
-            Edit <Text style={styles.highlight}>App.tsx</Text> to change this
-            screen and then come back to see your edits.
-          </Section>
-          <Section title="See Your Changes">
-            <ReloadInstructions />
-          </Section>
-          <Section title="Debug">
-            <DebugInstructions />
-          </Section>
-          <Section title="Learn More">
-            Read the docs to discover what to do next:
-          </Section>
-          <LearnMoreLinks />
-        </View>
-      </ScrollView>
-    </SafeAreaView>
+    <NavigationContainer>
+      <Tab.Navigator screenOptions={{headerShown: false, tabBarShowLabel: false, tabBarBackground: () => (
+        <View style={[ globalStyles.main, StyleSheet.absoluteFill ]} />
+      )}}>
+        <Tab.Screen name='calendar' component={Main} options={{ tabBarIcon: (info) => {
+          return <Image style={{ width: 30, height: 30, margin: 10 }} source={ (info.focused) ? require("./assets/calendarChosen.png") : require("./assets/calendar.png")}/>
+        } }}/>
+        <Tab.Screen name='edit' component={Main} options={{ tabBarIcon: (info) => {
+          return <Image style={{ width: 30, height: 30, margin: 10 }} source={ (info.focused) ? require("./assets/editChosen.png") : require("./assets/edit.png")}/>
+        } }}/>
+        <Tab.Screen name='profile' component={Main} options={{ tabBarIcon: (info) => {
+          return <Image style={{ width: 30, height: 30, margin: 10 }} source={ (info.focused) ? require("./assets/profileChosen.png") : require("./assets/profile.png")}/>
+        } }}/>
+        <Tab.Screen name='search' component={Main} options={{ tabBarIcon: (info) => {
+          return <Image style={{ width: 30, height: 30, margin: 10 }} source={ (info.focused) ? require("./assets/searchChosen.png") : require("./assets/search.png")}/>
+        } }}/>
+      </Tab.Navigator>
+    </NavigationContainer>
   );
 }
 
