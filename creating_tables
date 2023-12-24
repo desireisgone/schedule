@@ -1,0 +1,64 @@
+CREATE TABLE faculty (
+    id_faculty      INTEGER NOT NULL
+                            PRIMARY KEY,
+    id_universities INTEGER NOT NULL
+                            REFERENCES universities (id_universities),
+    title           TEXT    NOT NULL
+);
+
+
+CREATE TABLE groups (
+    id_groups  INTEGER PRIMARY KEY
+                       NOT NULL,
+    title      TEXT    NOT NULL,
+    id_lessons INTEGER NOT NULL,
+    id_faculty INTEGER NOT NULL
+                       REFERENCES faculty (id_faculty),
+    id_sessiya INTEGER NOT NULL
+);
+
+
+CREATE TABLE lessons (
+    id_lessons INTEGER PRIMARY KEY
+                       NOT NULL,
+    place      TEXT,
+    start_time TEXT    NOT NULL,
+    end_time   TEXT    NOT NULL,
+    id_teacher NUMERIC NOT NULL
+                       REFERENCES teachers (id_teacher),
+    id_groups  INTEGER NOT NULL
+                       REFERENCES groups (id_groups),
+    title      TEXT    NOT NULL,
+    weekday    INTEGER NOT NULL,
+    type       TEXT    NOT NULL,
+    chis_znam  INTEGER NOT NULL,
+    subgroup   INTEGER NOT NULL
+);
+
+CREATE TABLE sessiya (
+    id_sessiya INTEGER NOT NULL
+                       PRIMARY KEY,
+    place      TEXT    NOT NULL,
+    start_time TEXT    NOT NULL,
+    end_time   TEXT    NOT NULL,
+    id_teacher INTEGER NOT NULL
+                       REFERENCES teachers (id_teacher),
+    id_groups  INTEGER NOT NULL
+                       REFERENCES groups (id_groups),
+    title      TEXT    NOT NULL,
+    weekday    INTEGER NOT NULL,
+    type       TEXT    NOT NULL
+);
+
+CREATE TABLE teachers (
+    id_teacher INTEGER NOT NULL
+                       PRIMARY KEY,
+    full_name  TEXT    NOT NULL
+);
+
+CREATE TABLE universities (
+    id_universities INTEGER PRIMARY KEY
+                            NOT NULL,
+    title           TEXT    NOT NULL,
+    city            TEXT    NOT NULL
+);
