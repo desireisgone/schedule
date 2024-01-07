@@ -1,5 +1,5 @@
-const sequelize = require('../db')
-const {DataTypes} = require('sequelize')
+import sequelize from "../db.js"
+import { DataTypes } from "sequelize"
 
 // таблицы
 const University = sequelize.define('universities', {
@@ -94,4 +94,4 @@ Session.belongsTo(Teacher, {
   foreignKey: 'id_teacher'
 })
 
-module.exports = {University, Faculty, Group, Teacher, Lesson, Session}
+export { University, Faculty, Group, Teacher, Lesson, Session }

@@ -1,6 +1,6 @@
-const {Sequelize} = require('sequelize')
+import { Sequelize } from 'sequelize'
 
-module.exports = new Sequelize({
+export default new Sequelize({
   dialect: "sqlite",
   storage: "schedule.db",
   define: {
