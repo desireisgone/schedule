@@ -5,8 +5,11 @@ import cors from 'cors'
 import sequelize from './db.js'
 import * as models from './models/models.js'
 import routes from './routes/routes.js'
+import executeAdbReverse from './adb.js'
+
 const port = process.env.PORT || 5000
 const hostname = process.env.HOSTNAME || ""
+executeAdbReverse(port)
 
 const app = express()
 app.use(cors())

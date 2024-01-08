@@ -33,8 +33,8 @@ const Lesson = sequelize.define('lessons', {
   end_time: {type: DataTypes.STRING, allowNull: false},
   type: {type: DataTypes.STRING, allowNull: false, defaultValue: 'Пр'},
   weekday: {type: DataTypes.INTEGER, allowNull: false},
-  chis_znam: {type: DataTypes.INTEGER, allowNull: false, defaultValue: 0},
-  subgroup: {type: DataTypes.INTEGER},
+  chis_znam: {type: DataTypes.STRING},
+  subgroup: {type: DataTypes.STRING},
   id_group: {type: DataTypes.INTEGER, allowNull: false},
   id_teacher: {type: DataTypes.INTEGER, allowNull: false}
 })
@@ -93,5 +93,31 @@ Teacher.hasMany(Session, {
 Session.belongsTo(Teacher, {
   foreignKey: 'id_teacher'
 })
+
+const dropLessonVies = `DROP VIEW IF EXISTS lesson_schedule;`
+
+const dropSessionView = `DROP VIEW IF EXISTS session_schedule;`
+
+const lessonView = `CREATE VIEW lesson_schedule AS 
+  SELECT l.*, g.title as group_title, t.full_name FROM lessons l 
+  INNER JOIN groups g ON (l.id_group = g.id_group) 
+  INNER JOIN teachers t ON (l.id_teacher = t.id_teacher);`
+
+const sessionView = `CREATE VIEW session_schedule AS 
+  SELECT s.*, g.title as group_title, t.full_name FROM session s 
+  INNER JOIN groups g ON (s.id_group = g.id_group) 
+  INNER JOIN teachers t ON (s.id_teacher = t.id_teacher);`
+
+sequelize.query(dropLessonVies)
+  .then(() => {
+    sequelize.query(lessonView)
+  })
+  .catch((error) => { console.log(error) })
+  
+sequelize.query(dropSessionView)
+  .then(() => {
+    sequelize.query(sessionView)
+  })
+  .catch((error) => { console.log(error) })
 
 export { University, Faculty, Group, Teacher, Lesson, Session }
