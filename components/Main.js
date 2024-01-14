@@ -1,10 +1,8 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
-  Button,
   View, 
   SafeAreaView, 
   Text, 
-  ScrollView, 
   StatusBar, 
   FlatList, 
   TouchableOpacity, 
@@ -12,6 +10,8 @@ import {
 } from "react-native";
 import { globalStyles } from "../styles/style";
 import Header from "./Header";
+import axios from "axios";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const currentTime = {hour: 10, minutes: 31}
 
@@ -32,7 +32,7 @@ function Lesson({element}) {
       </View>
       <Text style={[styles.title, (chk) ? {color: "black"} : {}]}>{element.title}</Text>
       <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
-        <Text style={[styles.teacher, (chk) ? {color: "black"} : {}]}>{element.teacher}</Text>
+        <Text style={[styles.teacher, (chk) ? {color: "black"} : {}]}>{element.full_name}</Text>
         <Text style={[styles.place, (chk) ? {color: "black"} : {}]}>{element.place}</Text>
       </View>
     </TouchableOpacity>
@@ -45,49 +45,62 @@ export default function Main() {
     return "Числитель"
   }
 
-  // тут надо будет юзать fetch для подкючения к бэкэнду ну потом сделаем
-  const [days, setDays] = useState([
-    {
-      id_lesson: 1,
-      title: "Методы вычислений",
-      start_time: "8:20",
-      end_time: "9:50",
-      teacher: "Поплавский Д. В.",
-      type: "Лек.",
-      place: "12 корпус ауд. 333"
-    },
-    {
-      id_lesson: 2,
-      title: "Теория вероятности",
-      start_time: "10:00",
-      end_time: "11:35",
-      teacher: "Агафонова Н. Ю.",
-      type: "Лек.",
-      place: "12 корпус ауд. 304"
-    },
-    {
-      id_lesson: 3,
-      title: "Методы вычислений",
-      start_time: "12:05",
-      end_time: "13:40",
-      teacher: "Поплавский Д. В.",
-      type: "Пр.",
-      place: "12 корпус ауд. 333"
-    },
-  ]);
+  const [currentDay, setCurrentDay] = useState((new Date()).getDay())
+
+  const onPressFunc = (newDay) => {
+    setCurrentDay(newDay)
+  }
+
+  const [responseData, setResponseData] = useState(null)
+
+  const fetchData = async () => {
+    try {
+      const response = await axios.get('http://localhost:3000/api/lessons/byGroup/1')
+      setResponseData(response.data)
+      await AsyncStorage.setItem('user_schedule', JSON.stringify(response.data))
+      console.log('Расписание загружено с сервера')
+    } catch (error) {
+      console.error('Ошибка при выполнении запроса:', error.message)
+    }
+  }
+
+  const loadData = async () => {
+    try {
+      const schedule = await AsyncStorage.getItem('user_schedule')
+      if (schedule !== null) {
+        setResponseData(JSON.parse(schedule))
+        console.log('Расписание загружено из кэша')
+      }
+      else {
+        fetchData()
+      }
+    } catch (error) {
+      console.log('Ошибка при загрузке данных из кэша', error.message)
+    }
+  }
+
+  useEffect(() => {
+    loadData()
+  }, [])
 
   return (
     <SafeAreaView>
       <StatusBar style={ globalStyles.main } />
-      <Header/>
+      <Header onPressFunc={onPressFunc}/>
       <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center", marginTop: 10}}>
         <Text style={styles.weektype}>{ getWeekType() }</Text>
         <TouchableOpacity style={{ right: 20 }}>
-          <Image style={{ width: 20, height: 20, margin: 10 }} source={require("../assets/filter.png")}/>
+          <Image
+            style={{ width: 20, height: 20, margin: 10}}
+            source={require("../assets/filter.png")}
+          />
         </TouchableOpacity>
       </View>
-      <FlatList style={{ width: "100%" }} data={days} renderItem={( {item} ) => {
-        return <Lesson element={item}/>
+      <FlatList style={{ width: "100%" }} data={responseData} renderItem={( {item} ) => {
+        if (item.weekday === currentDay) {
+          return <Lesson element={item}/>
+        }
+        return
       }}/>
     </SafeAreaView>
   );

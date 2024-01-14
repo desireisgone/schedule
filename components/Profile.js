@@ -1,32 +1,55 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
-  Image,
-  View, 
-  SafeAreaView, 
-  Text,  
-  StatusBar, 
-  FlatList, 
-  TouchableOpacity, 
-  StyleSheet,
-  TextInput 
+  View,
+  Text,
+  TouchableOpacity,
+  StyleSheet
 } from "react-native";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
-//ну парс а не сгу пон да
-const Header = () => {
+const Header = ({university}) => {
   return (
     <View style={styles.header}>
-      <Text style={styles.headerText}>СГУ им. Чернышевского</Text>
+      <Text style={styles.headerText}>{university}</Text>
     </View>
-  );
-};
+  )
+}
 
-export default function Search() {
+const clearCache = async () => {
+  await AsyncStorage.multiRemove(['user_university', 'user_group', 'user_schedule'])
+}
+
+export default function Profile() {
+
+  const [university, setUniversity] = useState(null)
+  const [group, setGroup] = useState(null)
+
+  const loadData = async () => {
+    try {
+      const data = await AsyncStorage.multiGet(['user_university', 'user_group'])
+      if (data[0][1] !== null && data[1][1] !== null) {
+        setUniversity(data[0][1].toString())
+        setGroup(data[1][1].toString())
+      }
+      else {
+        setUniversity('Университет не выбран')
+        setGroup('не выбрана')
+      }
+    } catch (error) {
+      console.log('Ошибка при загрузке данных из кэша', error.message)
+    }
+  }
+
+  useEffect(() => {
+    loadData()
+  }, [])
+
   return (
     <View style={styles.container}>
-      <Header />
+      <Header university={university}/>
       {/* Дополнительный текст и кнопка */}
       <View style={styles.content}>
-        <Text style={styles.additionalText}>Группа: 351</Text>
+        <Text style={styles.additionalText}>Группа: {group}</Text>
         <TouchableOpacity
           style={styles.button1}
           onPress={() => {
@@ -52,6 +75,15 @@ export default function Search() {
           }}
         >
           <Text style={styles.buttonText3}>Поделиться приложением</Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity
+          style={styles.buttonClearCache}
+          onPress={() => {
+            clearCache()
+          }}
+        >
+          <Text style={styles.buttonClearCacheText}>Очистить кэш</Text>
         </TouchableOpacity>
       </View>
     </View>
@@ -119,6 +151,19 @@ const styles = StyleSheet.create({
   },
   buttonText3: {
     color: "white",
+    fontSize: 20,
+    fontFamily: 'JetBrainsMono-Light',
+  },
+  buttonClearCache: {
+    backgroundColor: "#ffcd5b",
+    padding: 10,
+    borderRadius: 5,
+    width: "100%",
+    alignItems: "center",
+    marginTop: 20,
+  },
+  buttonClearCacheText: {
+    color: "black",
     fontSize: 20,
     fontFamily: 'JetBrainsMono-Light',
   }

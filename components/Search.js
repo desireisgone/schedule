@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Image,
   View, 
@@ -12,35 +12,45 @@ import {
 } from "react-native";
 import { globalStyles } from "../styles/style";
 import Header from "./Header";
+import axios from "axios";
 
 function Teacher({teacher}) {
   return (
     <TouchableOpacity style={styles.teacher}>
-      <Text style={styles.teachertext}>{teacher.fio}</Text>
+      <Text style={styles.teachertext}>{teacher.full_name}</Text>
     </TouchableOpacity>
   );
 }
 
 export default function Search() {
 
-  // тут надо будет юзать fetch для подкючения к бэкэнду ну потом сделаем
-  const [teachers, setTeachers] = useState([
-    {
-      id_teacher: 1,
-      fio: "Агафонова Нина Юрьевна"
-    },
-    {
-      id_teacher: 2,
-      fio: "Поплавский Дмитрий Владиславович"
-    },
-  ]);
+  const [teachers, setTeachers] = useState(null)
 
-  const [search, setSearch] = useState("");
+  const [search, setSearch] = useState("")
+
+  const [currentDay, setCurrentDat] = useState((new Date()).getDay())
+
+  const onPressFunc = (newDay) => {
+    setCurrentDat(newDay)
+  }
+
+  const fetchData = async () => {
+    try {
+      const response = await axios.get('http://localhost:3000/api/teachers')
+      setTeachers(response.data)
+    } catch (error) {
+      console.error('Ошибка при выполнении запроса:', error.message)
+    }
+  }
+
+  useEffect(() => {
+    fetchData()
+  }, [])
 
   return (
     <SafeAreaView>
       <StatusBar style={ globalStyles.main } />
-      <Header/>
+      <Header onPressFunc={onPressFunc}/>
       <View style={styles.searchbar}>
         <Image source={require("../assets/searchInput.png")}/>
         <TextInput style={styles.textinput} placeholderTextColor="white" placeholder="Поиск" />

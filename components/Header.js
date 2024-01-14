@@ -1,22 +1,17 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
-  Button,
-  View, 
-  SafeAreaView, 
-  Text, 
-  ScrollView, 
-  StatusBar, 
-  FlatList, 
+  View,
+  Text,
   TouchableOpacity, 
-  StyleSheet, Image
+  StyleSheet
 } from "react-native";
 import { globalStyles } from "../styles/style";
 
 const weekdays = ['Вс', 'Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб']
 const current = (new Date()).getDay()
-function HeaderElement({element}) {
+function HeaderElement({element, onPressFunc}) {
   return (
-    <TouchableOpacity style={styles.dayItem}>
+    <TouchableOpacity style={styles.dayItem} onPress={() => {onPressFunc(element.weekday)}}>
       <Text style={styles.weekday}>{weekdays[element.weekday]}</Text>
       <View style={ (element.weekday === current) ? [globalStyles.currentLesson, styles.daynumber] : styles.daynumber }>
         <Text style={(element.weekday === 0) ? styles.dayseven : styles.day}>{element.day}</Text>
@@ -25,26 +20,36 @@ function HeaderElement({element}) {
   );
 }
 
-export default function Header() {
+export default function Header({ onPressFunc }) {
 
-  const [dates, setDates] = useState([
-    {day: 11, weekday: 1},
-    {day: 12, weekday: 2},
-    {day: 13, weekday: 3},
-    {day: 14, weekday: 4},
-    {day: 15, weekday: 5},
-    {day: 16, weekday: 6},
-    {day: 17, weekday: 0},
-  ])
+  const getCurrentWeekDates = () => {
+    const currentDate = new Date()
+    const currentDay = currentDate.getDay()
+    const weekStart = new Date(currentDate)
+    const difference = currentDay - 1
+
+    weekStart.setDate(currentDate.getDate() - difference)
+
+    const weekDates = []
+    for (let i = 0; i < 7; i++) {
+      const day = new Date(weekStart)
+      day.setDate(weekStart.getDate() + i)
+      weekDates.push({ day: day.getDate(), weekday: (i + 1) % 7 })
+    }
+    return weekDates
+  }
+
+  const dates = getCurrentWeekDates()
+
   return (
     <View style={[globalStyles.main, styles.main]}>
-      <HeaderElement element={dates[0]}/>
-      <HeaderElement element={dates[1]}/>
-      <HeaderElement element={dates[2]}/>
-      <HeaderElement element={dates[3]}/>
-      <HeaderElement element={dates[4]}/>
-      <HeaderElement element={dates[5]}/>
-      <HeaderElement element={dates[6]}/>
+      <HeaderElement element={dates[0]} onPressFunc={onPressFunc}/>
+      <HeaderElement element={dates[1]} onPressFunc={onPressFunc}/>
+      <HeaderElement element={dates[2]} onPressFunc={onPressFunc}/>
+      <HeaderElement element={dates[3]} onPressFunc={onPressFunc}/>
+      <HeaderElement element={dates[4]} onPressFunc={onPressFunc}/>
+      <HeaderElement element={dates[5]} onPressFunc={onPressFunc}/>
+      <HeaderElement element={dates[6]} onPressFunc={onPressFunc}/>
     </View>
   );
 }
@@ -70,7 +75,6 @@ const styles = StyleSheet.create({
     fontFamily: 'JetBrainsMono-Medium',
     fontWeight: '500',
     letterSpacing: 0.60,
-    wordWrap: 'break-word',
     textAlign: "center",
   },
   day: {
@@ -79,7 +83,6 @@ const styles = StyleSheet.create({
     fontFamily: 'JetBrainsMono-Medium',
     fontWeight: '500',
     letterSpacing: 0.60,
-    wordWrap: 'break-word',
   },
   dayseven: {
     color: '#98AFFF',
@@ -87,6 +90,5 @@ const styles = StyleSheet.create({
     fontFamily: 'JetBrainsMono-Medium',
     fontWeight: '500',
     letterSpacing: 0.60,
-    wordWrap: 'break-word',
   }
 });
