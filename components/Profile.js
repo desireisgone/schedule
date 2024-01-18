@@ -6,6 +6,23 @@ import {
   StyleSheet
 } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { createStackNavigator } from "@react-navigation/stack";
+import { ScreenUniversities, ScreenFaculties, ScreenGroups } from "./ChangeGroupScreens";
+import { useFocusEffect } from "@react-navigation/native";
+import { globalStyles } from "../styles/style";
+
+const Stack = createStackNavigator()
+
+export default function StackNav() {
+  return (
+    <Stack.Navigator>
+      <Stack.Screen name="Profile" component={Profile} options={{ headerShown: false }} />
+      <Stack.Screen name="Universities" component={ScreenUniversities} options={{ headerStyle: { backgroundColor: globalStyles.main.backgroundColor } }} />
+      <Stack.Screen name="Faculties" component={ScreenFaculties} options={{ headerStyle: { backgroundColor: globalStyles.main.backgroundColor } }} />
+      <Stack.Screen name="Groups" component={ScreenGroups} options={{ headerStyle: { backgroundColor: globalStyles.main.backgroundColor } }} />
+    </Stack.Navigator>
+  )
+}
 
 const Header = ({university}) => {
   return (
@@ -19,7 +36,7 @@ const clearCache = async () => {
   await AsyncStorage.multiRemove(['user_university', 'user_group', 'user_schedule'])
 }
 
-export default function Profile() {
+function Profile({ navigation, route }) {
 
   const [university, setUniversity] = useState(null)
   const [group, setGroup] = useState(null)
@@ -40,9 +57,25 @@ export default function Profile() {
     }
   }
 
+  const loadAfterChange = async () => {
+    try {
+      if (route.params) {
+        setUniversity(route.params.university_title)
+        setGroup(route.params.group.title)
+        await AsyncStorage.multiSet([['user_university', university], ['user_group', group]])
+      }
+    } catch (error) {
+      console.log('Ошибка при загрузке данных из кэша', error.message)
+    }
+  }
+
   useEffect(() => {
     loadData()
   }, [])
+
+  useFocusEffect(() => {
+    loadAfterChange()
+  })
 
   return (
     <View style={styles.container}>
@@ -53,7 +86,7 @@ export default function Profile() {
         <TouchableOpacity
           style={styles.button1}
           onPress={() => {
-            //при нажатии на кнопку поменять группу былобыславно
+            navigation.navigate('Universities')
           }}
         >
           <Text style={styles.buttonText1}>Сменить группу</Text>
