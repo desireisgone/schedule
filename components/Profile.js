@@ -10,6 +10,7 @@ import { createStackNavigator } from "@react-navigation/stack";
 import { ScreenUniversities, ScreenFaculties, ScreenGroups } from "./ChangeGroupScreens";
 import { useFocusEffect } from "@react-navigation/native";
 import { themes } from "../styles/style";
+import { useTheme } from './ThemeContext';
 
 const Stack = createStackNavigator()
 
@@ -37,14 +38,7 @@ const clearCache = async () => {
 }
 
 function Profile({ navigation, route }) {
-  const [currentTheme, setCurrentTheme] = useState(themes.green);
-  const [isThemeBlue, setIsThemeBlue] = useState(false);
-
-  const changeTheme = () => {
-    const newTheme = isThemeBlue ? themes.green : themes.blue;
-    setCurrentTheme(newTheme);
-    setIsThemeBlue(!isThemeBlue); // Инвертируем значение флага
-  };
+  const { currentTheme, changeTheme } = useTheme();
 
   const [university, setUniversity] = useState(null)
   const [group, setGroup] = useState(null)

@@ -17,17 +17,24 @@ import { NavigationContainer } from '@react-navigation/native';
 import Main from './components/Main';
 import Search from './components/Search';
 import Profile from './components/Profile';
-import { globalStyles } from './styles/style';
+import { useTheme, ThemeProvider } from './components/ThemeContext';
 
 const Tab = createBottomTabNavigator();
 
-function App(): React.JSX.Element {
+function AppContent() {
+  const { currentTheme, bottomTabBackground } = useTheme();
+
   return (
-    <NavigationContainer>
-      <Tab.Navigator screenOptions={{headerShown: false, tabBarShowLabel: false, tabBarBackground: () => (
-        <View style={[ globalStyles.main, StyleSheet.absoluteFill ]} />
-      )}}>
-        <Tab.Screen name='calendar' component={Main} options={{ tabBarIcon: (info) => {
+    <Tab.Navigator
+      screenOptions={{
+        headerShown: false,
+        tabBarShowLabel: false,
+        tabBarBackground: () => (
+          <View style={[{ backgroundColor: bottomTabBackground }, StyleSheet.absoluteFill]} />
+        ),
+      }}
+    >
+      <Tab.Screen name='calendar' component={Main} options={{ tabBarIcon: (info) => {
           return <Image style={{ width: info.size, height: info.size }} source={ (info.focused) ? require("./assets/calendarChosen_2.png") : require("./assets/calendar_2.png")}/>
         } }}/>
         <Tab.Screen name='edit' component={Main} options={{ tabBarIcon: (info) => {
@@ -39,8 +46,17 @@ function App(): React.JSX.Element {
         <Tab.Screen name='profile' component={Profile} options={{ tabBarIcon: (info) => {
           return <Image style={{ width: info.size, height: info.size }} source={ (info.focused) ? require("./assets/profileChosen_2.png") : require("./assets/profile_2.png")}/>
         } }}/>
-      </Tab.Navigator>
-    </NavigationContainer>
+    </Tab.Navigator>
+  );
+}
+
+export function App() {
+  return (
+    <ThemeProvider>
+      <NavigationContainer>
+        <AppContent />
+      </NavigationContainer>
+    </ThemeProvider>
   );
 }
 

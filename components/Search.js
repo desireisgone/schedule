@@ -65,8 +65,7 @@ export default function Search() {
 const styles = StyleSheet.create({
   searchbar: {
     borderRadius: 10,
-    backgroundColor: "#cfe3d4",
-    // backgroundColor: "#D4DDFB",
+    backgroundColor: "#D4DDFB",
     flexDirection: "row",
     alignItems: "center",
     width: "90%",
@@ -83,8 +82,7 @@ const styles = StyleSheet.create({
     fontWeight: '500',
   },
   teacher: {
-    backgroundColor: "#9ec1a7",
-    // backgroundColor: "#98AFFF",
+    backgroundColor: "#98AFFF",
     borderRadius: 10,
     width: "90%",
     alignSelf: "center",
