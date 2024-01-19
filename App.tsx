@@ -28,16 +28,16 @@ function App(): React.JSX.Element {
         <View style={[ globalStyles.main, StyleSheet.absoluteFill ]} />
       )}}>
         <Tab.Screen name='calendar' component={Main} options={{ tabBarIcon: (info) => {
-          return <Image style={{ width: info.size, height: info.size }} source={ (info.focused) ? require("./assets/calendarChosen.png") : require("./assets/calendar.png")}/>
+          return <Image style={{ width: info.size, height: info.size }} source={ (info.focused) ? require("./assets/calendarChosen_2.png") : require("./assets/calendar_2.png")}/>
         } }}/>
         <Tab.Screen name='edit' component={Main} options={{ tabBarIcon: (info) => {
-          return <Image style={{ width: info.size, height: info.size }} source={ (info.focused) ? require("./assets/editChosen.png") : require("./assets/edit.png")}/>
+          return <Image style={{ width: info.size, height: info.size }} source={ (info.focused) ? require("./assets/editChosen_2.png") : require("./assets/edit_2.png")}/>
         } }}/>
         <Tab.Screen name='search' component={Search} options={{ tabBarIcon: (info) => {
-          return <Image style={{ width: info.size, height: info.size }} source={ (info.focused) ? require("./assets/searchChosen.png") : require("./assets/search.png")}/>
+          return <Image style={{ width: info.size, height: info.size }} source={ (info.focused) ? require("./assets/searchChosen_2.png") : require("./assets/search_2.png")}/>
         } }}/>
         <Tab.Screen name='profile' component={Profile} options={{ tabBarIcon: (info) => {
-          return <Image style={{ width: info.size, height: info.size }} source={ (info.focused) ? require("./assets/profileChosen.png") : require("./assets/profile.png")}/>
+          return <Image style={{ width: info.size, height: info.size }} source={ (info.focused) ? require("./assets/profileChosen_2.png") : require("./assets/profile_2.png")}/>
         } }}/>
       </Tab.Navigator>
     </NavigationContainer>

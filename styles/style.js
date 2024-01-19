@@ -1,13 +1,25 @@
 import { StyleSheet } from "react-native";
 
+// export const globalStyles = StyleSheet.create({
+//   currentLesson: {
+//     backgroundColor: "#ffcd5b",
+//   },
+//   main: {
+//     backgroundColor: "#3d64ec",
+//   },
+//   lesson: {
+//     backgroundColor: "#7393ff",
+//   }
+// })
+
 export const globalStyles = StyleSheet.create({
   currentLesson: {
-    backgroundColor: "#ffcd5b",
+    backgroundColor: "#b46e4c",
   },
   main: {
-    backgroundColor: "#3d64ec",
+    backgroundColor: "#63836b",
   },
   lesson: {
-    backgroundColor: "#7393ff",
+    backgroundColor: "#9ec1a7",
   }
 })

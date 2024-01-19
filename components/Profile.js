@@ -17,7 +17,7 @@ export default function StackNav() {
   return (
     <Stack.Navigator>
       <Stack.Screen name="Profile" component={Profile} options={{ headerShown: false }} />
-      <Stack.Screen name="Universities" component={ScreenUniversities} options={{ headerStyle: { backgroundColor: globalStyles.main.backgroundColor } }} />
+      <Stack.Screen name="Universities" component={ScreenUniversities} options={{title: "ХУЙ", headerStyle: { backgroundColor: globalStyles.main.backgroundColor } }} />
       <Stack.Screen name="Faculties" component={ScreenFaculties} options={{ headerStyle: { backgroundColor: globalStyles.main.backgroundColor } }} />
       <Stack.Screen name="Groups" component={ScreenGroups} options={{ headerStyle: { backgroundColor: globalStyles.main.backgroundColor } }} />
     </Stack.Navigator>
@@ -125,7 +125,8 @@ function Profile({ navigation, route }) {
 
 const styles = StyleSheet.create({
   header: {
-    backgroundColor: "#3D64EC",
+    backgroundColor: "#63836b",
+    // backgroundColor: "#3D64EC",
     padding: 23,
     alignItems: "center",
   },
@@ -142,12 +143,14 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   additionalText: {
-    color: "#3D64EC",
+    color: "#63836b",
+    // color: "#3D64EC",
     fontSize: 25,
     fontFamily: 'JetBrainsMono-Medium',
   },
   button1: {
-    backgroundColor: "#7393FF",
+    backgroundColor: "#9ec1a7",
+    // backgroundColor: "#7393FF",
     padding: 10,
     borderRadius: 5,
     width: "100%",
@@ -162,7 +165,8 @@ const styles = StyleSheet.create({
     fontFamily: 'JetBrainsMono-Light',
   },
   button2: {
-    backgroundColor: "#98AFFF",
+    backgroundColor: "#a7c1ae",
+    // backgroundColor: "#98AFFF",
     padding: 10,
     borderRadius: 5,
     width: "100%",
@@ -175,7 +179,8 @@ const styles = StyleSheet.create({
     fontFamily: 'JetBrainsMono-Light',
   },
   button3: {
-    backgroundColor: "#98AFFF",
+    backgroundColor: "#a7c1ae",
+    // backgroundColor: "#98AFFF",
     padding: 10,
     borderRadius: 5,
     width: "100%",

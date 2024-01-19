@@ -92,7 +92,7 @@ export default function Main() {
         <TouchableOpacity style={{ right: 20 }}>
           <Image
             style={{ width: 20, height: 20, margin: 10}}
-            source={require("../assets/filter.png")}
+            source={require("../assets/filter_2.png")}
           />
         </TouchableOpacity>
       </View>
@@ -157,7 +157,8 @@ const styles = StyleSheet.create({
     padding: 5,
   },
   weektype: {
-    color: '#3d64ec',
+    color: '#63836b',
+    // color: '#3d64ec',
     fontSize: 20,
     fontFamily: 'JetBrainsMono-Bold',
     fontWeight: '700',

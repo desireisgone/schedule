@@ -70,7 +70,8 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
   },
   weekday: {
-    color: '#98AFFF',
+    color: '#a7c1ae',
+    // color: '#98AFFF',
     fontSize: 16,
     fontFamily: 'JetBrainsMono-Medium',
     fontWeight: '500',
@@ -85,7 +86,8 @@ const styles = StyleSheet.create({
     letterSpacing: 0.60,
   },
   dayseven: {
-    color: '#98AFFF',
+    color: '#a7c1ae',
+    // color: '#98AFFF',
     fontSize: 16,
     fontFamily: 'JetBrainsMono-Medium',
     fontWeight: '500',
