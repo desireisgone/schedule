@@ -9,7 +9,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { createStackNavigator } from "@react-navigation/stack";
 import { ScreenUniversities, ScreenFaculties, ScreenGroups } from "./ChangeGroupScreens";
 import { useFocusEffect } from "@react-navigation/native";
-import { globalStyles } from "../styles/style";
+import { themes } from "../styles/style";
 
 const Stack = createStackNavigator()
 
@@ -17,19 +17,19 @@ export default function StackNav() {
   return (
     <Stack.Navigator>
       <Stack.Screen name="Profile" component={Profile} options={{ headerShown: false }} />
-      <Stack.Screen name="Universities" component={ScreenUniversities} options={{title: "ХУЙ", headerStyle: { backgroundColor: globalStyles.main.backgroundColor } }} />
-      <Stack.Screen name="Faculties" component={ScreenFaculties} options={{ headerStyle: { backgroundColor: globalStyles.main.backgroundColor } }} />
-      <Stack.Screen name="Groups" component={ScreenGroups} options={{ headerStyle: { backgroundColor: globalStyles.main.backgroundColor } }} />
+      <Stack.Screen name="Universities" component={ScreenUniversities} options={{title: "Выберите учебное заведение", headerStyle: { backgroundColor: themes.green.maincolor } }} />
+      <Stack.Screen name="Faculties" component={ScreenFaculties} options={{title: "Выберите факультет", headerStyle: { backgroundColor: themes.green.maincolor } }} />
+      <Stack.Screen name="Groups" component={ScreenGroups} options={{title: "Выберите группу", headerStyle: { backgroundColor: themes.green.maincolor } }} />
     </Stack.Navigator>
   )
 }
 
-const Header = ({university}) => {
+const Header = ({ university, currentTheme }) => {
   return (
-    <View style={styles.header}>
+    <View style={[styles.header, { backgroundColor: currentTheme.maincolor }]}>
       <Text style={styles.headerText}>{university}</Text>
     </View>
-  )
+  );
 }
 
 const clearCache = async () => {
@@ -37,6 +37,14 @@ const clearCache = async () => {
 }
 
 function Profile({ navigation, route }) {
+  const [currentTheme, setCurrentTheme] = useState(themes.green);
+  const [isThemeBlue, setIsThemeBlue] = useState(false);
+
+  const changeTheme = () => {
+    const newTheme = isThemeBlue ? themes.green : themes.blue;
+    setCurrentTheme(newTheme);
+    setIsThemeBlue(!isThemeBlue); // Инвертируем значение флага
+  };
 
   const [university, setUniversity] = useState(null)
   const [group, setGroup] = useState(null)
@@ -79,53 +87,80 @@ function Profile({ navigation, route }) {
 
   return (
     <View style={styles.container}>
-      <Header university={university}/>
+      <Header university={university} currentTheme={currentTheme} />
       {/* Дополнительный текст и кнопка */}
       <View style={styles.content}>
-        <Text style={styles.additionalText}>Группа: {group}</Text>
+        <Text style={[styles.additionalText, { color: currentTheme.maincolor }]}>
+          Группа: {group}
+        </Text>
         <TouchableOpacity
-          style={styles.button1}
+          style={[
+            styles.button1,
+            { backgroundColor: currentTheme.buttons_and_lessons },
+          ]}
           onPress={() => {
-            navigation.navigate('Universities')
+            navigation.navigate('Universities');
           }}
         >
           <Text style={styles.buttonText1}>Сменить группу</Text>
         </TouchableOpacity>
 
         <TouchableOpacity
-          style={styles.button2}
+          style={[
+            styles.button2,
+            { backgroundColor: currentTheme.buttons_and_lessons },
+          ]}
           onPress={() => {
-            //при нажатии на кнопку поменять группу былобыславно
+            //при нажатии на кнопку поменять группу было бы славно
           }}
         >
           <Text style={styles.buttonText2}>Оценить приложение</Text>
         </TouchableOpacity>
 
         <TouchableOpacity
-          style={styles.button3}
+          style={[
+            styles.button3,
+            { backgroundColor: currentTheme.buttons_and_lessons },
+          ]}
           onPress={() => {
-            //при нажатии на кнопку поменять группу былобыславно
+            //при нажатии на кнопку поменять группу было бы славно
           }}
         >
           <Text style={styles.buttonText3}>Поделиться приложением</Text>
         </TouchableOpacity>
 
         <TouchableOpacity
-          style={styles.buttonClearCache}
+          style={[
+            styles.buttonClearCache,
+            { backgroundColor: currentTheme.orange },
+          ]}
           onPress={() => {
-            clearCache()
+            clearCache();
           }}
         >
           <Text style={styles.buttonClearCacheText}>Очистить кэш</Text>
         </TouchableOpacity>
+
+        <TouchableOpacity
+          style={[
+            styles.buttontheme,
+            { backgroundColor: currentTheme.buttons_and_lessons },
+          ]}
+          onPress={() => {
+            changeTheme();
+          }}
+        >
+          <Text style={styles.buttonTexttheme}>Сменить тему</Text>
+        </TouchableOpacity>
       </View>
     </View>
+
   );
 };
 
 const styles = StyleSheet.create({
   header: {
-    backgroundColor: "#63836b",
+    backgroundColor: themes.green.maincolor,
     // backgroundColor: "#3D64EC",
     padding: 23,
     alignItems: "center",
@@ -143,13 +178,13 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   additionalText: {
-    color: "#63836b",
+    color: themes.green.maincolor,
     // color: "#3D64EC",
     fontSize: 25,
     fontFamily: 'JetBrainsMono-Medium',
   },
   button1: {
-    backgroundColor: "#9ec1a7",
+    backgroundColor: themes.green.buttons_and_lessons,
     // backgroundColor: "#7393FF",
     padding: 10,
     borderRadius: 5,
@@ -165,13 +200,13 @@ const styles = StyleSheet.create({
     fontFamily: 'JetBrainsMono-Light',
   },
   button2: {
-    backgroundColor: "#a7c1ae",
+    backgroundColor: themes.green.buttons_and_lessons,
     // backgroundColor: "#98AFFF",
     padding: 10,
     borderRadius: 5,
     width: "100%",
     alignItems: "center",
-    marginTop: 350,
+    marginTop: 200,
   },
   buttonText2: {
     color: "white",
@@ -179,7 +214,7 @@ const styles = StyleSheet.create({
     fontFamily: 'JetBrainsMono-Light',
   },
   button3: {
-    backgroundColor: "#a7c1ae",
+    backgroundColor: themes.green.buttons_and_lessons,
     // backgroundColor: "#98AFFF",
     padding: 10,
     borderRadius: 5,
@@ -193,7 +228,8 @@ const styles = StyleSheet.create({
     fontFamily: 'JetBrainsMono-Light',
   },
   buttonClearCache: {
-    backgroundColor: "#ffcd5b",
+    // backgroundColor: "#ffcd5b",
+    backgroundColor: themes.green.orange,
     padding: 10,
     borderRadius: 5,
     width: "100%",
@@ -201,7 +237,21 @@ const styles = StyleSheet.create({
     marginTop: 20,
   },
   buttonClearCacheText: {
-    color: "black",
+    color: "white",
+    fontSize: 20,
+    fontFamily: 'JetBrainsMono-Medium',
+  },
+  buttontheme: {
+    backgroundColor: themes.green.buttons_and_lessons,
+    // backgroundColor: "#98AFFF",
+    padding: 10,
+    borderRadius: 5,
+    width: "100%",
+    alignItems: "center",
+    marginTop: 20,
+  },
+  buttonTexttheme: {
+    color: "white",
     fontSize: 20,
     fontFamily: 'JetBrainsMono-Light',
   }
