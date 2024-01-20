@@ -11,6 +11,7 @@ import { ScreenUniversities, ScreenFaculties, ScreenGroups } from "./ChangeGroup
 import { useFocusEffect } from "@react-navigation/native";
 import { themes } from "../styles/style";
 import { useTheme } from './ThemeContext';
+import { useCache } from "./CacheContext";
 
 const Stack = createStackNavigator()
 
@@ -33,12 +34,10 @@ const Header = ({ university, currentTheme }) => {
   );
 }
 
-const clearCache = async () => {
-  await AsyncStorage.multiRemove(['user_university', 'user_group', 'user_schedule'])
-}
-
 function Profile({ navigation, route }) {
-  const { currentTheme, changeTheme } = useTheme();
+
+  const { currentTheme, changeTheme } = useTheme()
+  const { clearCache, setGroupId } = useCache()
 
   const [university, setUniversity] = useState(null)
   const [group, setGroup] = useState(null)
@@ -61,11 +60,12 @@ function Profile({ navigation, route }) {
 
   const loadAfterChange = async () => {
     try {
-      if (route.params) {
-        setUniversity(route.params.university_title)
-        setGroup(route.params.group.title)
-        await AsyncStorage.multiSet([['user_university', university], ['user_group', group]])
-      }
+      setUniversity(route.params.university_title)
+      setGroup(route.params.group.title)
+      const newGroupId = (route.params.group.id_group).toString()
+      await AsyncStorage.multiSet([['user_university', university], ['user_group', group], ['user_id_group', newGroupId]])
+      setGroupId(newGroupId)
+      route.params = null
     } catch (error) {
       console.log('Ошибка при загрузке данных из кэша', error.message)
     }
@@ -76,7 +76,12 @@ function Profile({ navigation, route }) {
   }, [])
 
   useFocusEffect(() => {
-    loadAfterChange()
+    if (route.params) {
+      loadAfterChange()
+    }
+    else {
+      loadData()
+    }
   })
 
   return (

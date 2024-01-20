@@ -8,24 +8,27 @@ import {
   TouchableOpacity, 
   StyleSheet, Image 
 } from "react-native";
-import { globalStyles } from "../styles/style";
 import Header from "./Header";
 import axios from "axios";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { useTheme } from "./ThemeContext";
+import { useCache } from "./CacheContext";
+import { useFocusEffect } from "@react-navigation/native";
 
-const currentTime = {hour: 10, minutes: 31}
+const date = new Date()
+const currentDateTime = { hour: date.getHours(), minutes: date.getMinutes(), dayNum: date.getDay() } //{hour: 10, minutes: 31, dayNum: 5}//
 
 const checkTime = (startTime, endTime) => {
   var startTime = String(startTime).split(':').map(Number)
   var endTime = String(endTime).split(':').map(Number)
-  return !((startTime[0] > currentTime.hour || startTime[0] == currentTime.hour && startTime[1] > currentTime.minutes) ||
-           (endTime[0] < currentTime.hour || endTime[0] == currentTime.hour && endTime[1] < currentTime.minutes))
+  return !((startTime[0] > currentDateTime.hour || startTime[0] == currentDateTime.hour && startTime[1] > currentDateTime.minutes) ||
+           (endTime[0] < currentDateTime.hour || endTime[0] == currentDateTime.hour && endTime[1] < currentDateTime.minutes))
 }
 
-function Lesson({element}) {
-  var chk = checkTime (element.start_time, element.end_time)
+function Lesson({element, currentTheme}) {
+  var chk = checkTime(element.start_time, element.end_time) && currentDateTime.dayNum == element.weekday
   return (
-    <TouchableOpacity style={[ (chk) ? globalStyles.currentLesson : globalStyles.lesson, styles.lesson ]}>
+    <TouchableOpacity style={[ (chk) ? {backgroundColor: currentTheme.orange} : {backgroundColor: currentTheme.buttons_and_lessons}, styles.lesson ]}>
       <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center" }}>
         <Text style={[styles.time, (chk) ? {color: "black"} : {}]}>{element.start_time} - {element.end_time}</Text>
         <Text style={[styles.type, (chk) ? {color: "black"} : {}]}>{element.type}</Text>
@@ -41,23 +44,25 @@ function Lesson({element}) {
 
 export default function Main() {
 
+  const { currentTheme, changeTheme } = useTheme()
+  const { groupId } = useCache()
+
   const getWeekType = () => {
     return "Числитель"
   }
 
-  const [currentDay, setCurrentDay] = useState((new Date()).getDay())
+  const [chosenDay, setChosenDay] = useState((new Date()).getDay())
+  const [responseData, setResponseData] = useState(null)
 
   const onPressFunc = (newDay) => {
-    setCurrentDay(newDay)
+    setChosenDay(newDay)
   }
-
-  const [responseData, setResponseData] = useState(null)
 
   const fetchData = async () => {
     try {
-      const response = await axios.get('http://localhost:3000/api/lessons/byGroup/1')
+      const response = await axios.get(`http://localhost:3000/api/lessons/byGroup/${groupId ? groupId : "0"}`)
       setResponseData(response.data)
-      await AsyncStorage.setItem('user_schedule', JSON.stringify(response.data))
+      //await AsyncStorage.setItem('user_schedule', JSON.stringify(response.data))
       console.log('Расписание загружено с сервера')
     } catch (error) {
       console.error('Ошибка при выполнении запроса:', error.message)
@@ -83,12 +88,17 @@ export default function Main() {
     loadData()
   }, [])
 
+  useFocusEffect(
+    React.useCallback(() => {
+      loadData()
+  }, [groupId]))
+
   return (
     <SafeAreaView>
-      <StatusBar style={ globalStyles.main } />
-      <Header onPressFunc={onPressFunc}/>
+      <StatusBar style={ currentTheme.maincolor } />
+      <Header onPressFunc={onPressFunc} currentTheme={currentTheme} chosenDay={chosenDay}/>
       <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center", marginTop: 10}}>
-        <Text style={styles.weektype}>{ getWeekType() }</Text>
+        <Text style={[styles.weektype, {color: currentTheme.maincolor}]}>{ getWeekType() }</Text>
         <TouchableOpacity style={{ right: 20 }}>
           <Image
             style={{ width: 20, height: 20, margin: 10}}
@@ -97,8 +107,8 @@ export default function Main() {
         </TouchableOpacity>
       </View>
       <FlatList style={{ width: "100%" }} data={responseData} renderItem={( {item} ) => {
-        if (item.weekday === currentDay) {
-          return <Lesson element={item}/>
+        if (item.weekday === chosenDay) {
+          return <Lesson element={item} currentTheme={currentTheme}/>
         }
         return
       }}/>

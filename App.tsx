@@ -18,11 +18,12 @@ import Main from './components/Main';
 import Search from './components/Search';
 import Profile from './components/Profile';
 import { useTheme, ThemeProvider } from './components/ThemeContext';
+import { useCache, CacheProvider } from './components/CacheContext';
 
 const Tab = createBottomTabNavigator();
 
 function AppContent() {
-  const { currentTheme, bottomTabBackground } = useTheme();
+  const { currentTheme, bottomTabBackground } = useTheme()
 
   return (
     <Tab.Navigator
@@ -52,11 +53,13 @@ function AppContent() {
 
 export function App() {
   return (
-    <ThemeProvider>
-      <NavigationContainer>
-        <AppContent />
-      </NavigationContainer>
-    </ThemeProvider>
+    <CacheProvider>
+      <ThemeProvider>
+        <NavigationContainer>
+          <AppContent />
+        </NavigationContainer>
+      </ThemeProvider>
+    </CacheProvider>
   );
 }
 

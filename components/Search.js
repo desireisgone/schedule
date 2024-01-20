@@ -13,16 +13,19 @@ import {
 import { globalStyles } from "../styles/style";
 import Header from "./Header";
 import axios from "axios";
+import { useTheme } from "./ThemeContext";
 
-function Teacher({teacher}) {
+function Teacher({teacher, currentTheme}) {
   return (
-    <TouchableOpacity style={styles.teacher}>
+    <TouchableOpacity style={[styles.teacher, {backgroundColor: currentTheme.buttons_and_lessons}]}>
       <Text style={styles.teachertext}>{teacher.full_name}</Text>
     </TouchableOpacity>
   );
 }
 
 export default function Search() {
+
+  const { currentTheme, changeTheme } = useTheme()
 
   const [teachers, setTeachers] = useState(null)
 
@@ -50,13 +53,13 @@ export default function Search() {
   return (
     <SafeAreaView>
       <StatusBar style={ globalStyles.main } />
-      <Header onPressFunc={onPressFunc}/>
-      <View style={styles.searchbar}>
+      <Header onPressFunc={onPressFunc} currentTheme={currentTheme}/>
+      <View style={[styles.searchbar, {backgroundColor: currentTheme.light_for_search_and_daynumber}]}>
         <Image source={require("../assets/searchInput.png")}/>
         <TextInput style={styles.textinput} placeholderTextColor="white" placeholder="Поиск" />
       </View>
       <FlatList data={teachers} renderItem={( {item} ) => {
-        return <Teacher teacher={item}/>
+        return <Teacher teacher={item} currentTheme={currentTheme}/>
       }}/>
     </SafeAreaView>
   );
@@ -65,7 +68,6 @@ export default function Search() {
 const styles = StyleSheet.create({
   searchbar: {
     borderRadius: 10,
-    backgroundColor: "#D4DDFB",
     flexDirection: "row",
     alignItems: "center",
     width: "90%",
@@ -82,7 +84,6 @@ const styles = StyleSheet.create({
     fontWeight: '500',
   },
   teacher: {
-    backgroundColor: "#98AFFF",
     borderRadius: 10,
     width: "90%",
     alignSelf: "center",

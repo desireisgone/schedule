@@ -5,22 +5,21 @@ import {
   TouchableOpacity, 
   StyleSheet
 } from "react-native";
-import { globalStyles } from "../styles/style";
 
 const weekdays = ['Вс', 'Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб']
-const current = (new Date()).getDay()
-function HeaderElement({element, onPressFunc}) {
-  return (
-    <TouchableOpacity style={styles.dayItem} onPress={() => {onPressFunc(element.weekday)}}>
-      <Text style={styles.weekday}>{weekdays[element.weekday]}</Text>
-      <View style={ (element.weekday === current) ? [globalStyles.currentLesson, styles.daynumber] : styles.daynumber }>
-        <Text style={(element.weekday === 0) ? styles.dayseven : styles.day}>{element.day}</Text>
-      </View>
-    </TouchableOpacity>
-  );
-}
 
-export default function Header({ onPressFunc }) {
+export default function Header({ onPressFunc, currentTheme, chosenDay }) {
+
+  const HeaderElement = ({element}) => {
+    return (
+      <TouchableOpacity style={styles.dayItem} onPress={() => {onPressFunc(element.weekday)}}>
+        <Text style={[styles.weekday, {color: currentTheme.light_for_search_and_daynumber}]}>{weekdays[element.weekday]}</Text>
+        <View style={ (element.weekday === chosenDay) ? [{backgroundColor: currentTheme.orange}, styles.daynumber] : styles.daynumber }>
+          <Text style={(element.weekday === 0) ? [styles.dayseven, {color: currentTheme.light_for_search_and_daynumber}] : styles.day}>{element.day}</Text>
+        </View>
+      </TouchableOpacity>
+    )
+  }
 
   const getCurrentWeekDates = () => {
     const currentDate = new Date()
@@ -42,16 +41,16 @@ export default function Header({ onPressFunc }) {
   const dates = getCurrentWeekDates()
 
   return (
-    <View style={[globalStyles.main, styles.main]}>
-      <HeaderElement element={dates[0]} onPressFunc={onPressFunc}/>
-      <HeaderElement element={dates[1]} onPressFunc={onPressFunc}/>
-      <HeaderElement element={dates[2]} onPressFunc={onPressFunc}/>
-      <HeaderElement element={dates[3]} onPressFunc={onPressFunc}/>
-      <HeaderElement element={dates[4]} onPressFunc={onPressFunc}/>
-      <HeaderElement element={dates[5]} onPressFunc={onPressFunc}/>
-      <HeaderElement element={dates[6]} onPressFunc={onPressFunc}/>
+    <View style={[{backgroundColor: currentTheme.maincolor}, styles.main]}>
+      <HeaderElement element={dates[0]}/>
+      <HeaderElement element={dates[1]}/>
+      <HeaderElement element={dates[2]}/>
+      <HeaderElement element={dates[3]}/>
+      <HeaderElement element={dates[4]}/>
+      <HeaderElement element={dates[5]}/>
+      <HeaderElement element={dates[6]}/>
     </View>
-  );
+  )
 }
 
 const styles = StyleSheet.create({
@@ -93,4 +92,4 @@ const styles = StyleSheet.create({
     fontWeight: '500',
     letterSpacing: 0.60,
   }
-});
+})
