@@ -16,12 +16,70 @@ import { useCache } from "./CacheContext";
 const Stack = createStackNavigator()
 
 export default function StackNav() {
+  const { currentTheme, changeTheme } = useTheme()
   return (
     <Stack.Navigator>
       <Stack.Screen name="Profile" component={Profile} options={{ headerShown: false }} />
-      <Stack.Screen name="Universities" component={ScreenUniversities} options={{title: "Выберите учебное заведение", headerStyle: { backgroundColor: themes.green.maincolor } }} />
-      <Stack.Screen name="Faculties" component={ScreenFaculties} options={{title: "Выберите факультет", headerStyle: { backgroundColor: themes.green.maincolor } }} />
-      <Stack.Screen name="Groups" component={ScreenGroups} options={{title: "Выберите группу", headerStyle: { backgroundColor: themes.green.maincolor } }} />
+      <Stack.Screen
+        name="Universities"
+        component={ScreenUniversities}
+        options={{
+          title: "Выберите учебное заведение",
+          headerStyle: { backgroundColor: currentTheme.maincolor, height: 100 },
+          headerTintColor: 'white',
+          headerTitle: () => (
+            <Text style={{
+              fontFamily: 'JetBrainsMono-Bold',
+              fontSize: 25,
+              color: 'white', 
+              flexWrap: 'wrap', 
+              textAlign: 'center',
+            }}>
+              Выберите учебное заведение
+            </Text>
+          ),
+        }}
+      />
+      <Stack.Screen
+        name="Faculties"
+        component={ScreenFaculties}
+        options={{
+          title: "Выберите факультет",
+          headerStyle: { backgroundColor: currentTheme.maincolor, height: 70 },
+          headerTintColor: 'white',
+          headerTitle: () => (
+            <Text style={{
+              fontFamily: 'JetBrainsMono-Bold',
+              fontSize: 25,
+              color: 'white',
+              flexWrap: 'wrap',
+              textAlign: 'center',
+            }}>
+              Выберите факультет
+            </Text>
+          ),
+        }}
+      />
+      <Stack.Screen
+        name="Groups"
+        component={ScreenGroups}
+        options={{
+          title: "Выберите группу",
+          headerStyle: { backgroundColor: currentTheme.maincolor, height: 70 },
+          headerTintColor: 'white',
+          headerTitle: () => (
+            <Text style={{
+              fontFamily: 'JetBrainsMono-Bold',
+              fontSize: 25,
+              color: 'white',
+              flexWrap: 'wrap',
+              textAlign: 'center',
+            }}>
+              Выберите группу
+            </Text>
+          ),
+        }}
+      />
     </Stack.Navigator>
   )
 }
@@ -130,18 +188,6 @@ function Profile({ navigation, route }) {
 
         <TouchableOpacity
           style={[
-            styles.buttonClearCache,
-            { backgroundColor: currentTheme.orange },
-          ]}
-          onPress={() => {
-            clearCache();
-          }}
-        >
-          <Text style={styles.buttonClearCacheText}>Очистить кэш</Text>
-        </TouchableOpacity>
-
-        <TouchableOpacity
-          style={[
             styles.buttontheme,
             { backgroundColor: currentTheme.buttons_and_lessons },
           ]}
@@ -150,6 +196,18 @@ function Profile({ navigation, route }) {
           }}
         >
           <Text style={styles.buttonTexttheme}>Сменить тему</Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity
+          style={[
+            styles.buttonClearCache,
+            { backgroundColor: currentTheme.orange },
+          ]}
+          onPress={() => {
+            clearCache();
+          }}
+        >
+          <Text style={styles.buttonClearCacheText}>Очистить кэш</Text>
         </TouchableOpacity>
       </View>
     </View>
@@ -205,8 +263,8 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     width: "100%",
     alignItems: "center",
-    marginTop: 200,
-  },
+    marginTop: 170,
+    },
   buttonText2: {
     color: "white",
     fontSize: 20,
@@ -220,8 +278,22 @@ const styles = StyleSheet.create({
     width: "100%",
     alignItems: "center",
     marginTop: 20,
-  },
+    },
   buttonText3: {
+    color: "white",
+    fontSize: 20,
+    fontFamily: 'JetBrainsMono-Light',
+  },
+  buttontheme: {
+    backgroundColor: themes.green.buttons_and_lessons,
+    // backgroundColor: "#98AFFF",
+    padding: 10,
+    borderRadius: 5,
+    width: "100%",
+    alignItems: "center",
+    marginTop: 20,
+      },
+  buttonTexttheme: {
     color: "white",
     fontSize: 20,
     fontFamily: 'JetBrainsMono-Light',
@@ -233,25 +305,12 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     width: "100%",
     alignItems: "center",
-    marginTop: 20,
-  },
+    position: "absolute",
+    bottom: -65,
+    },
   buttonClearCacheText: {
     color: "white",
     fontSize: 20,
     fontFamily: 'JetBrainsMono-Medium',
-  },
-  buttontheme: {
-    backgroundColor: themes.green.buttons_and_lessons,
-    // backgroundColor: "#98AFFF",
-    padding: 10,
-    borderRadius: 5,
-    width: "100%",
-    alignItems: "center",
-    marginTop: 20,
-  },
-  buttonTexttheme: {
-    color: "white",
-    fontSize: 20,
-    fontFamily: 'JetBrainsMono-Light',
   }
 });
