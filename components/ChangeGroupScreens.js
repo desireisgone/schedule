@@ -4,11 +4,15 @@ import {
   Text,
   FlatList,
   TouchableOpacity,
-  StyleSheet
+  StyleSheet,
+  ScrollView,
+  Image,
+  TextInput
 } from "react-native";
 import axios from "axios";
-import { themes } from "../styles/style";
 import { useTheme } from "./ThemeContext";
+
+export default function Search() {} //надо
 
 export function ScreenUniversities({ navigation, route }) {
   const { currentTheme, changeTheme } = useTheme()
@@ -30,6 +34,10 @@ export function ScreenUniversities({ navigation, route }) {
 
   return (
     <View style={[styles.container, {backgroundColor: currentTheme.maincolor}]}>
+      <View style={[styles.searchbar, {backgroundColor: currentTheme.light_for_search_and_daynumber}]}>
+          <Image source={require("../assets/searchInput.png")}/>
+          <TextInput style={styles.textinput} placeholderTextColor="white" placeholder="Поиск" />
+      </View>
       <FlatList data={universities} contentContainerStyle={styles.flatListContainer} renderItem={({item}) => {
         return (
           <TouchableOpacity style={[styles.optionItem, {backgroundColor: currentTheme.buttons_and_lessons}]} onPress={() => {
@@ -65,6 +73,10 @@ export function ScreenFaculties({ navigation, route }) {
 
   return (
     <View style={[styles.container, {backgroundColor: currentTheme.maincolor}]}>
+      <View style={[styles.searchbar, {backgroundColor: currentTheme.light_for_search_and_daynumber}]}>
+          <Image source={require("../assets/searchInput.png")}/>
+          <TextInput style={styles.textinput} placeholderTextColor="white" placeholder="Поиск" />
+      </View>
       <FlatList data={faculties} contentContainerStyle={styles.flatListContainer} renderItem={({item}) => {
         return (
           <TouchableOpacity style={[styles.optionItem, {backgroundColor: currentTheme.buttons_and_lessons}]} onPress={() => {
@@ -100,6 +112,10 @@ export function ScreenGroups({ navigation, route }) {
 
   return (
     <View style={[styles.container, {backgroundColor: currentTheme.maincolor}]}>
+      <View style={[styles.searchbar, {backgroundColor: currentTheme.light_for_search_and_daynumber}]}>
+          <Image source={require("../assets/searchInput.png")}/>
+          <TextInput style={styles.textinput} placeholderTextColor="white" placeholder="Поиск" />
+      </View>
       <FlatList data={groups} contentContainerStyle={styles.flatListContainer} renderItem={({item}) => {
         return (
           <TouchableOpacity style={[styles.optionItem, {backgroundColor: currentTheme.buttons_and_lessons}]} onPress={() => {
@@ -113,6 +129,23 @@ export function ScreenGroups({ navigation, route }) {
   )
 }
 const styles = StyleSheet.create({
+  searchbar: {
+    borderRadius: 5,
+    flexDirection: "row",
+    alignItems: "center",
+    width: "90%",
+    marginVertical: 15,
+    paddingHorizontal: 15,
+    alignSelf: "center",
+  },
+  textinput: {
+    color: "white",
+    verticalAlign: "middle",
+    display: "flex",
+    fontSize: 20,
+    fontFamily: 'JetBrainsMono-Light',
+    fontWeight: '500',
+  },
   container: {
     flex: 1,
   },

@@ -6,7 +6,9 @@ import {
   StatusBar, 
   FlatList, 
   TouchableOpacity, 
-  StyleSheet, Image 
+  StyleSheet,
+  Image,
+  ScrollView
 } from "react-native";
 import Header from "./Header";
 import axios from "axios";
@@ -14,6 +16,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useTheme } from "./ThemeContext";
 import { useCache } from "./CacheContext";
 import { useFocusEffect } from "@react-navigation/native";
+import { themes } from '../styles/style';
 
 const date = new Date()
 const currentDateTime = { hour: date.getHours(), minutes: date.getMinutes(), dayNum: date.getDay() } //{hour: 10, minutes: 31, dayNum: 5}//
@@ -25,22 +28,29 @@ const checkTime = (startTime, endTime) => {
            (endTime[0] < currentDateTime.hour || endTime[0] == currentDateTime.hour && endTime[1] < currentDateTime.minutes))
 }
 
-function Lesson({element, currentTheme}) {
-  var chk = checkTime(element.start_time, element.end_time) && currentDateTime.dayNum == element.weekday
+function Lesson({ element, currentTheme }) {
+  var chk = checkTime(element.start_time, element.end_time) && currentDateTime.dayNum == element.weekday;
   return (
-    <TouchableOpacity style={[ (chk) ? {backgroundColor: currentTheme.orange} : {backgroundColor: currentTheme.buttons_and_lessons}, styles.lesson ]}>
+    <TouchableOpacity style={[chk ? { backgroundColor: currentTheme.orange } : { backgroundColor: currentTheme.buttons_and_lessons }, styles.lesson]}>
       <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center" }}>
-        <Text style={[styles.time, (chk) ? {color: "black"} : {}]}>{element.start_time} - {element.end_time}</Text>
-        <Text style={[styles.type, (chk) ? {color: "black"} : {}]}>{element.type}</Text>
+        <Text style={[styles.time, chk ? { color: "black" } : {}]}>{element.start_time} - {element.end_time}</Text>
+        <Text style={[styles.type, chk ? { color: "black" } : {}]}>{element.type}</Text>
       </View>
-      <Text style={[styles.title, (chk) ? {color: "black"} : {}]}>{element.title}</Text>
-      <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
-        <Text style={[styles.teacher, (chk) ? {color: "black"} : {}]}>{element.full_name}</Text>
-        <Text style={[styles.place, (chk) ? {color: "black"} : {}]}>{element.place}</Text>
+      <Text style={[styles.title, chk ? { color: "black" } : {}]}>{element.title}</Text>
+      <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "flex-end" }}>
+        <View style={{ flex: 3 }}>
+          <Text style={[styles.teacher, chk ? { color: "black" } : {}]}>{element.full_name}</Text>
+        </View>
+        <View style={{ flex: 1 }}>
+          <View style={{ flexDirection: "row", justifyContent: "flex-end", alignItems: "flex-end" }}>
+            <Text style={[styles.place, chk ? { color: "black" } : {}]}>{element.place}</Text>
+          </View>
+        </View>
       </View>
     </TouchableOpacity>
   );
 }
+
 
 export default function Main() {
 
@@ -94,25 +104,27 @@ export default function Main() {
   }, [groupId]))
 
   return (
-    <SafeAreaView>
-      <StatusBar style={ currentTheme.maincolor } />
-      <Header onPressFunc={onPressFunc} currentTheme={currentTheme} chosenDay={chosenDay}/>
-      <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center", marginTop: 10}}>
-        <Text style={[styles.weektype, {color: currentTheme.maincolor}]}>{ getWeekType() }</Text>
-        <TouchableOpacity style={{ right: 20 }}>
-          <Image
-            style={{ width: 20, height: 20, margin: 10}}
-            source={require("../assets/filter_2.png")}
-          />
-        </TouchableOpacity>
-      </View>
-      <FlatList style={{ width: "100%" }} data={responseData} renderItem={( {item} ) => {
-        if (item.weekday === chosenDay) {
-          return <Lesson element={item} currentTheme={currentTheme}/>
-        }
-        return
-      }}/>
-    </SafeAreaView>
+    <ScrollView>
+      <SafeAreaView>
+        <StatusBar style={ currentTheme.maincolor } />
+        <Header onPressFunc={onPressFunc} currentTheme={currentTheme} chosenDay={chosenDay}/>
+        <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center", marginTop: 10}}>
+          <Text style={[styles.weektype, {color: currentTheme.maincolor}]}>{ getWeekType() }</Text>
+          <TouchableOpacity style={{ right: 20 }}>
+            <Image
+              style={{ width: 20, height: 20, margin: 10}}
+              source={currentTheme === themes.green ? (require('../assets/filter_2.png')) : (require('../assets/filter.png'))}
+            />
+          </TouchableOpacity>
+        </View>
+        <FlatList style={{ width: "100%" }} data={responseData} renderItem={( {item} ) => {
+          if (item.weekday === chosenDay) {
+            return <Lesson element={item} currentTheme={currentTheme}/>
+          }
+          return
+        }}/>
+      </SafeAreaView>
+    </ScrollView>
   );
 }
 
