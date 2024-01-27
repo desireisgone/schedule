@@ -52,19 +52,17 @@ export default function Search() {
   }, [])
 
   return (
-    <ScrollView>
-      <SafeAreaView>
-        <StatusBar style={ globalStyles.main } />
-        <Header onPressFunc={onPressFunc} currentTheme={currentTheme}/>
-        <View style={[styles.searchbar, {backgroundColor: currentTheme.light_for_search_and_daynumber}]}>
-          <Image source={require("../assets/searchInput.png")}/>
-          <TextInput style={styles.textinput} placeholderTextColor="white" placeholder="Поиск" />
-        </View>
-        <FlatList data={teachers} renderItem={( {item} ) => {
-          return <Teacher teacher={item} currentTheme={currentTheme}/>
-        }}/>
-      </SafeAreaView>
-    </ScrollView>
+    <SafeAreaView style={{ flex: 1 }}>
+      <StatusBar style={ globalStyles.main } />
+      <Header onPressFunc={onPressFunc} currentTheme={currentTheme}/>
+      <View style={[styles.searchbar, {backgroundColor: currentTheme.light_for_search_and_daynumber}]}>
+        <Image source={require("../assets/searchInput.png")}/>
+        <TextInput style={styles.textinput} placeholderTextColor="white" placeholder="Поиск" />
+      </View>
+      <FlatList data={teachers} renderItem={( {item} ) => {
+        return <Teacher teacher={item} currentTheme={currentTheme}/>
+      }}/>
+    </SafeAreaView>
   );
 }
 

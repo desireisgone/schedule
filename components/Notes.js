@@ -25,25 +25,23 @@ export default function NewScreen() {
   };
 
   return (
-    <ScrollView>
-      <SafeAreaView>
-        <StatusBar style={currentTheme.maincolor} />
-        <Header onPressFunc={onPressFunc} currentTheme={currentTheme} chosenDay={chosenDay}/>
-        <View>
-          <View style={[styles.searchbar, {backgroundColor: currentTheme.light_for_search_and_daynumber}]}>
-            <Image source={require("../assets/searchInput.png")}/>
-            <TextInput style={styles.textinput} placeholderTextColor="white" placeholder="Поиск" />
-          </View>
-
-          <TouchableOpacity style={{ left: 322 }}>
-            <Image
-              style={{ width: 50, height: 50}}
-              source={currentTheme === themes.green ? (require('../assets/plus_2.png')) : (require('../assets/plus.png'))}
-            />
-          </TouchableOpacity>
+    <SafeAreaView style={{ flex: 1 }}>
+      <StatusBar style={currentTheme.maincolor} />
+      <Header onPressFunc={onPressFunc} currentTheme={currentTheme} chosenDay={chosenDay}/>
+      <View>
+        <View style={[styles.searchbar, {backgroundColor: currentTheme.light_for_search_and_daynumber}]}>
+          <Image source={require("../assets/searchInput.png")}/>
+          <TextInput style={styles.textinput} placeholderTextColor="white" placeholder="Поиск" />
         </View>
-      </SafeAreaView>
-    </ScrollView>
+
+        <TouchableOpacity style={{ left: 322 }}>
+          <Image
+            style={{ width: 50, height: 50}}
+            source={currentTheme === themes.green ? (require('../assets/plus_2.png')) : (require('../assets/plus.png'))}
+          />
+        </TouchableOpacity>
+      </View>
+    </SafeAreaView>
   );
 }
 

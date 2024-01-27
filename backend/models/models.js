@@ -31,15 +31,16 @@ const Lesson = sequelize.define('lessons', {
   place: {type: DataTypes.STRING, allowNull: false},
   start_time: {type: DataTypes.STRING, allowNull: false},
   end_time: {type: DataTypes.STRING, allowNull: false},
-  type: {type: DataTypes.STRING, allowNull: false, defaultValue: 'Пр'},
+  type: {type: DataTypes.STRING, allowNull: false, defaultValue: 'пр.'},
   weekday: {type: DataTypes.INTEGER, allowNull: false},
   chis_znam: {type: DataTypes.STRING},
   subgroup: {type: DataTypes.STRING},
   id_group: {type: DataTypes.INTEGER, allowNull: false},
-  id_teacher: {type: DataTypes.INTEGER, allowNull: false}
+  id_teacher: {type: DataTypes.INTEGER, allowNull: false},
+  date_read: {type: DataTypes.DATE}
 })
 
-const Session = sequelize.define('session', {
+const Session = sequelize.define('sessions', {
   id_exam: {type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true, allowNull: false},
   title: {type: DataTypes.STRING, allowNull: false},
   place: {type: DataTypes.STRING, allowNull: false},
@@ -104,7 +105,7 @@ const lessonView = `CREATE VIEW lesson_schedule AS
   INNER JOIN teachers t ON (l.id_teacher = t.id_teacher);`
 
 const sessionView = `CREATE VIEW session_schedule AS 
-  SELECT s.*, g.title as group_title, t.full_name FROM session s 
+  SELECT s.*, g.title as group_title, t.full_name FROM sessions s 
   INNER JOIN groups g ON (s.id_group = g.id_group) 
   INNER JOIN teachers t ON (s.id_teacher = t.id_teacher);`
 
