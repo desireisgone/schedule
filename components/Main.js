@@ -57,14 +57,14 @@ function SlideLessonRender({ element, chk, currentTheme }) {
       <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center" }}>
         <Text style={[styles.time, chk ? { color: "black" } : {}]}>{element.start_time} - {element.end_time}</Text>
 
-        {/* ВЫВОД НОМЕРА ПОДГРУППЫ. ПОТОМ МБ ПЕРЕДЕЛАТЬ */}
-        <Text style={[styles.type, chk ? { color: "black" } : {}]}>{element.subgroup}</Text>
-
-
         <Text style={[styles.type, chk ? { color: "black" } : {}]}>{element.type}</Text>
+        <View style={{ position: 'absolute', right: 0, top: 30 }}>
+          <Text style={[styles.time, chk ? { color: "black", fontSize: 14 } : { fontSize: 14 }]}>{element.subgroup}</Text>
+        </View>
+
       </View>
-      <Text style={[styles.title, chk ? { color: "black" } : {}]}>{element.title}</Text>
-      <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "flex-end" }}>
+      <Text style={[styles.title, chk ? { color: "black", top: 10 } : {top: 10}]}>{element.title}</Text>
+      <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "flex-end"}}>
         <View style={{ flex: 3 }}>
           <Text style={[styles.teacher, chk ? { color: "black" } : {}]}>{element.full_name}</Text>
         </View>
@@ -143,7 +143,7 @@ export default function Main() {
 
   const fetchData = async () => {
     try {
-      const response = await axios.get(`http://localhost:3000/api/lessons/byGroup/${groupId ? groupId : "0"}`)
+      const response = await axios.get(`http://localhost:3000/api/lessons/byGroup/2`)
       subgroupSearch(response.data)
       //await AsyncStorage.setItem('user_schedule', JSON.stringify(response.data))
       console.log('Расписание загружено с сервера')
