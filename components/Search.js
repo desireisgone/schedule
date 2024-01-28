@@ -41,18 +41,15 @@ export default function Search() {
 
   const fetchData = async () => {
     try {
-      const response = await axios.get('http://localhost:3000/api/teachers');
-      const sortedTeachers = response.data.filter((teacher) => /^[A-Za-zА-Яа-яЁё]/.test(teacher.full_name)).sort((a, b) => a.full_name.localeCompare(b.full_name))
-      setTeachers(sortedTeachers);
+      const response = await axios.get('http://localhost:3000/api/teachers')
+      setTeachers(response.data)
+    } catch (error) {
+      console.error('Ошибка при выполнении запроса:', error.message)
     }
-    catch (error) {
-      console.error('Ошибка при выполнении запроса:', error.message);
-    }
-  };
-  
+  }
 
   useEffect(() => {
-    fetchData();
+    fetchData()
     if (!search) {
       setSearchResult(null)
     }
