@@ -30,7 +30,6 @@ export function ScreenUniversities({ navigation, route }) {
   }
 
   useEffect(() => {
-    fetchData()
     if (!search) {
       setSearchResult(null)
     } else {
@@ -39,7 +38,11 @@ export function ScreenUniversities({ navigation, route }) {
       );
       setSearchResult(filteredUniversities)
     }
-  }, [search, universities])
+  }, [search])
+
+  useEffect(() => {
+    fetchData()
+  }, [])
 
   return (
     <View style={[styles.container, {backgroundColor: currentTheme.maincolor}]}>
@@ -80,7 +83,6 @@ export function ScreenFaculties({ navigation, route }) {
   }
 
   useEffect(() => {
-    fetchData()
     if (!search) {
       setSearchResult(null)
     } else {
@@ -89,7 +91,11 @@ export function ScreenFaculties({ navigation, route }) {
       );
       setSearchResult(filteredFaculties)
     }
-  }, [search, faculties])
+  }, [search])
+
+  useEffect(() => {
+    fetchData()
+  }, [])
 
   return (
     <View style={[styles.container, {backgroundColor: currentTheme.maincolor}]}>
@@ -129,7 +135,6 @@ export function ScreenGroups({ navigation, route }) {
   }
 
   useEffect(() => {
-    fetchData()
     if (!search) {
       setSearchResult(null)
     } else {
@@ -138,7 +143,11 @@ export function ScreenGroups({ navigation, route }) {
       );
       setSearchResult(filteredGroups)
     }
-  }, [search, groups])
+  }, [search])
+
+  useEffect(() => {
+    fetchData()
+  }, [])
 
   return (
     <View style={[styles.container, {backgroundColor: currentTheme.maincolor}]}>

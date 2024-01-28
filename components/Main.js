@@ -1,4 +1,4 @@
-import React, { useState, useEffect, lazy } from "react";
+import React, { useState, useEffect } from "react";
 import {
   View, 
   SafeAreaView, 
@@ -79,19 +79,21 @@ function SlideLessonRender({ element, chk, currentTheme }) {
 }
 
 function SlideLesson({ elements, currentTheme }) {
-  var chk = checkTime(elements[0].start_time, elements[0].end_time) && currentDateTime.dayNum == elements[0].weekday;
-  return (
-    <View style={[styles.lesson, { padding: 0 }]}>
-      <FlatList
-        horizontal
-        data={elements}
-        showsHorizontalScrollIndicator={false}
-        renderItem={({item}) => { return <SlideLessonRender element={item} chk={chk} len={elements.length} currentTheme={currentTheme}/> }}
-        pagingEnabled
-        snapToAlignment="center"
-      />
-    </View>
-  )
+  if (elements) {
+    var chk = checkTime(elements[0].start_time, elements[0].end_time) && currentDateTime.dayNum == elements[0].weekday;
+    return (
+      <View style={[styles.lesson, { padding: 0 }]}>
+        <FlatList
+          horizontal
+          data={elements}
+          showsHorizontalScrollIndicator={false}
+          renderItem={({item}) => { return <SlideLessonRender element={item} chk={chk} len={elements.length} currentTheme={currentTheme}/> }}
+          pagingEnabled
+          snapToAlignment="center"
+        />
+      </View>
+    )
+  }
 }
 
 export default function Main() {
@@ -143,7 +145,7 @@ export default function Main() {
 
   const fetchData = async () => {
     try {
-      const response = await axios.get(`http://localhost:3000/api/lessons/byGroup/2`)
+      const response = await axios.get(`http://localhost:3000/api/lessons/byGroup/${groupId ? groupId : "0"}`)
       subgroupSearch(response.data)
       //await AsyncStorage.setItem('user_schedule', JSON.stringify(response.data))
       console.log('Расписание загружено с сервера')
@@ -233,6 +235,7 @@ const styles = StyleSheet.create({
     fontWeight: '500',
     letterSpacing: 0.60,
     padding: 5,
+    alignSelf: "flex-end",
   },
   place: {
     color: 'white',

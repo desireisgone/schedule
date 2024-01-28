@@ -23,7 +23,7 @@ export default function Header({ onPressFunc, currentTheme, chosenDay }) {
 
   const getCurrentWeekDates = () => {
     const currentDate = new Date()
-    const currentDay = currentDate.getDay()
+    const currentDay = currentDate.getDay() === 0 ? 7 : currentDate.getDay()
     const weekStart = new Date(currentDate)
     const difference = currentDay - 1
 

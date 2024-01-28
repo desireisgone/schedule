@@ -28,15 +28,15 @@ export default function Search() {
 
   const { currentTheme, changeTheme } = useTheme()
 
-  const [teachers, setTeachers] = useState(null)
+  const [teachers, setTeachers] = useState([])
 
   const [search, setSearch] = useState("")
   const [searchResult, setSearchResult] = useState(null)
 
-  const [currentDay, setCurrentDat] = useState((new Date()).getDay())
+  const [currentDay, setCurrentDay] = useState((new Date()).getDay())
 
   const onPressFunc = (newDay) => {
-    setCurrentDat(newDay)
+    setCurrentDay(newDay)
   }
 
   const fetchData = async () => {
@@ -49,7 +49,6 @@ export default function Search() {
   }
 
   useEffect(() => {
-    fetchData()
     if (!search) {
       setSearchResult(null)
     }
@@ -59,8 +58,11 @@ export default function Search() {
       )
       setSearchResult(filteredTeachers)
     }
-  }, [search, teachers])
+  }, [search])
   
+  useEffect(() => {
+    fetchData()
+  }, [])
 
   return (
     <SafeAreaView style={{ flex: 1 }}>
