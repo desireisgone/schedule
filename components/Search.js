@@ -31,6 +31,7 @@ export default function Search() {
   const [teachers, setTeachers] = useState(null)
 
   const [search, setSearch] = useState("")
+  const [searchResult, setSearchResult] = useState(null)
 
   const [currentDay, setCurrentDat] = useState((new Date()).getDay())
 
@@ -48,8 +49,17 @@ export default function Search() {
   }
 
   useEffect(() => {
-    fetchData()
-  }, [])
+    if (!search) {
+      setSearchResult(null)
+    }
+    else {
+      const filteredTeachers = teachers.filter((teacher) =>
+        teacher.full_name.toLowerCase().includes(search.toLowerCase())
+      )
+      setSearchResult(filteredTeachers)
+    }
+  }, [search, teachers])
+  
 
   return (
     <SafeAreaView style={{ flex: 1 }}>
@@ -57,11 +67,11 @@ export default function Search() {
       <Header onPressFunc={onPressFunc} currentTheme={currentTheme}/>
       <View style={[styles.searchbar, {backgroundColor: currentTheme.light_for_search_and_daynumber}]}>
         <Image source={require("../assets/searchInput.png")}/>
-        <TextInput style={styles.textinput} placeholderTextColor="white" placeholder="Поиск" />
+        <TextInput style={styles.textinput} placeholderTextColor="white" placeholder="Поиск" onChangeText={(text) => setSearch(text)} />
       </View>
-      <FlatList data={teachers} renderItem={( {item} ) => {
-        return <Teacher teacher={item} currentTheme={currentTheme}/>
-      }}/>
+      <FlatList data={searchResult || teachers}
+                renderItem={({ item }) => <Teacher teacher={item} currentTheme={currentTheme} />}
+      />
     </SafeAreaView>
   );
 }
