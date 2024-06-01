@@ -65,6 +65,7 @@ const styles = StyleSheet.create({
     borderRadius: 20,
   },
   main: {
+    height: "9%",
     flexDirection: "row",
     justifyContent: "space-between",
   },

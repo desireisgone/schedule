@@ -1,9 +1,8 @@
-import dotenv from 'dotenv'
-dotenv.config()
+import 'dotenv/config'
 import express from 'express'
 import cors from 'cors'
-import sequelize from './db.js'
 import * as models from './models/models.js'
+import sequelize from './db.js'
 import routes from './routes/routes.js'
 import executeAdbReverse from './adb.js'
 
@@ -19,7 +18,9 @@ const startServer = async () => {
   try {
     await sequelize.authenticate()
     await sequelize.sync()
-    app.listen(port, hostname, () => { console.log(port) })
+    app.listen(port, hostname, () => {
+      console.log(`Server is available at http://${hostname}:${port}`)
+    })
   }
   catch (e) {
     console.log(e)

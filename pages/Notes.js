@@ -2,22 +2,18 @@ import React from "react";
 import {
   View, 
   SafeAreaView, 
-  Text, 
   StatusBar, 
-  FlatList, 
   TouchableOpacity, 
   StyleSheet,
-  ScrollView,
   Image,
   TextInput
 } from "react-native";
-import Header from "./Header";
-import { useTheme } from "./ThemeContext";
+import Header from "../components/Header.js";
+import { useTheme } from "../contexts/ThemeContext";
 import { themes } from '../styles/style';
 
 export default function NewScreen() {
   const { currentTheme } = useTheme();
-
   const [chosenDay, setChosenDay] = React.useState(new Date().getDay());
   
   const onPressFunc = (newDay) => {

@@ -5,7 +5,8 @@ import { DataTypes } from "sequelize"
 const University = sequelize.define('universities', {
   id_university: {type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true, allowNull: false},
   title: {type: DataTypes.STRING, allowNull: false},
-  city: {type: DataTypes.STRING}
+  city: {type: DataTypes.STRING},
+  reduction: {type: DataTypes.STRING}
 })
 
 const Faculty = sequelize.define('faculties', {

@@ -1,0 +1,8 @@
+{
+    "files.exclude": {
+        "**/*.config*": true,
+        "**/android/": true,
+        "**/ios/": true,
+        "**/node_modules/": true
+    }
+}

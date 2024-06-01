@@ -9,12 +9,11 @@ import {
   TouchableOpacity, 
   StyleSheet,
   TextInput,
-  ScrollView
 } from "react-native"
 import { globalStyles } from "../styles/style"
-import Header from "./Header";
+import Header from "../components/Header.js";
 import axios from "axios";
-import { useTheme } from "./ThemeContext";
+import { useTheme } from "../contexts/ThemeContext";
 
 function Teacher({teacher, currentTheme}) {
   return (
@@ -25,19 +24,15 @@ function Teacher({teacher, currentTheme}) {
 }
 
 export default function Search() {
-
   const { currentTheme, changeTheme } = useTheme()
-
   const [teachers, setTeachers] = useState([])
-
   const [search, setSearch] = useState("")
   const [searchResult, setSearchResult] = useState(null)
-
-  const [currentDay, setCurrentDay] = useState((new Date()).getDay())
-
+  const [chosenDay, setChosenDay] = useState(new Date().getDay());
+  
   const onPressFunc = (newDay) => {
-    setCurrentDay(newDay)
-  }
+    setChosenDay(newDay);
+  };
 
   const fetchData = async () => {
     try {
@@ -67,7 +62,7 @@ export default function Search() {
   return (
     <SafeAreaView style={{ flex: 1 }}>
       <StatusBar style={ globalStyles.main } />
-      <Header onPressFunc={onPressFunc} currentTheme={currentTheme}/>
+      <Header onPressFunc={onPressFunc} currentTheme={currentTheme} chosenDay={chosenDay}/>
       <View style={[styles.searchbar, {backgroundColor: currentTheme.light_for_search_and_daynumber}]}>
         <Image source={require("../assets/searchInput.png")}/>
         <TextInput style={styles.textinput} placeholderTextColor="white" placeholder="Поиск" onChangeText={(text) => setSearch(text)} />
