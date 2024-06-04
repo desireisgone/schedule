@@ -34,7 +34,7 @@ export default function MainNavigator() {
         component={Main}
         options={{ tabBarIcon: (info) => {
           return <Image
-            style={{ width: "38%", height: "50%" }}
+            style={{ width: 40, height: 40 }}
             source={currentTheme === themes.green
               ? (info.focused ? require('../assets/calendarChosen_2.png') : require('../assets/calendar_2.png'))
               : (info.focused ? require('../assets/calendarChosen.png') : require('../assets/calendar.png'))
@@ -46,7 +46,7 @@ export default function MainNavigator() {
           component={Notes}
           options={{ tabBarIcon: (info) => {
           return <Image
-            style={{ width: "38%", height: "50%" }}
+            style={{ width: 40, height: 40 }}
             source={currentTheme === themes.green
               ? (info.focused ? require('../assets/editChosen_2.png') : require('../assets/edit_2.png'))
               : (info.focused ? require('../assets/editChosen.png') : require('../assets/edit.png'))
@@ -58,7 +58,7 @@ export default function MainNavigator() {
           component={Search}
           options={{ tabBarIcon: (info) => {
           return <Image
-            style={{ width: "38%", height: "50%" }}
+            style={{ width: 40, height: 40 }}
             source={currentTheme === themes.green
               ? (info.focused ? require('../assets/searchChosen_2.png') : require('../assets/search_2.png'))
               : (info.focused ? require('../assets/searchChosen.png') : require('../assets/search.png'))
@@ -70,7 +70,7 @@ export default function MainNavigator() {
           component={ProfileNavigator}
           options={{ tabBarIcon: (info) => {
           return <Image
-            style={{ width: "38%", height: "50%" }}
+            style={{ width: 40, height: 40 }}
             source={currentTheme === themes.green
               ? (info.focused ? require('../assets/profileChosen_2.png') : require('../assets/profile_2.png'))
               : (info.focused ? require('../assets/profileChosen.png') : require('../assets/profile.png'))

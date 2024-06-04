@@ -70,7 +70,7 @@ export default function Main() {
       //await AsyncStorage.setItem('user_schedule', JSON.stringify(response.data))
       console.log('Расписание загружено с сервера')
     } catch (error) {
-      console.error('Ошибка при выполнении запроса:', error.message)
+      console.log('Ошибка при выполнении запроса:', error.message)
     }
   }
 
@@ -103,7 +103,7 @@ export default function Main() {
     <SafeAreaView style={{ flex: 1 }}>
       <StatusBar style={ currentTheme.maincolor } />
       <Header onPressFunc={onPressFunc} currentTheme={currentTheme} chosenDay={chosenDay}/>
-      <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center", marginTop: 10}}>
+      <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center"}}>
         <Text style={[styles.weektype, {color: currentTheme.maincolor}]}>{ chis_znam === 'чис.' ? "Числитель" : "Знаменатель" }</Text>
         <TouchableOpacity style={{ right: 20 }}>
           <Image
