@@ -7,7 +7,7 @@ export default function Header({ onPressFunc, currentTheme, chosenDay }) {
   return (
     <View style={[styles.container]}>
       <DayPicker onPressFunc={onPressFunc} currentTheme={currentTheme} chosenDay={chosenDay}/>
-      <Calendar chosenDay={chosenDay}/>
+      <Calendar/>
     </View>
   )
 }

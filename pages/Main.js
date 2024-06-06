@@ -17,6 +17,8 @@ import { useFocusEffect } from "@react-navigation/native";
 import { themes } from '../styles/style.js';
 import { Lesson, SlideLesson } from "../components/Lesson.js";
 import { styles } from "../styles/MainPageStyle.js";
+import Calendar from "../components/Calendar.js";
+import DayPicker from "../components/DayPicker.js";
 
 export default function Main() {
   const { currentTheme, changeTheme } = useTheme()
@@ -102,7 +104,9 @@ export default function Main() {
   return (
     <SafeAreaView style={{ flex: 1 }}>
       <StatusBar style={ currentTheme.maincolor } />
-      <Header onPressFunc={onPressFunc} currentTheme={currentTheme} chosenDay={chosenDay}/>
+      {/*<Header onPressFunc={onPressFunc} currentTheme={currentTheme} chosenDay={chosenDay}/>*/}
+      <DayPicker onPressFunc={onPressFunc} currentTheme={currentTheme} chosenDay={chosenDay}/>
+      <Calendar/>
       <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center"}}>
         <Text style={[styles.weektype, {color: currentTheme.maincolor}]}>{ chis_znam === 'чис.' ? "Числитель" : "Знаменатель" }</Text>
         <TouchableOpacity style={{ right: 20 }}>

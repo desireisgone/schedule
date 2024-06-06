@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import {
   View, 
   TouchableOpacity, 
@@ -70,12 +70,24 @@ const CalendarMonth = React.memo(({ weeks, monthNum }) => {
   )
 })
 
-export default function Calendar({ chosenDay }) {
-  const [modalVisible, setModalVisible] = useState(false)
+const CalendarList = React.memo(({ dates }) => {
+  return (
+    <View style={styles.calendar_wrapper}>
+      <FlatList
+        horizontal
+        data={dates}
+        initialNumToRender={1}
+        showsHorizontalScrollIndicator={false}
+        renderItem={({item}) => <CalendarMonth weeks={item.weeks} monthNum={item.id}/>}
+        pagingEnabled
+        keyExtractor={item => item.id}
+      />
+    </View>
+  )
+})
 
-  const renderItem = useCallback(({item}) => {
-    return <CalendarMonth weeks={item.weeks} monthNum={item.id}/>
-  })
+export default function Calendar({  }) {
+  const [modalVisible, setModalVisible] = useState(false)
 
   const dates = []
   for (let i = 0; i < 12; i++) {
@@ -87,35 +99,11 @@ export default function Calendar({ chosenDay }) {
     <View style={styles.container}>
       <TouchableOpacity
         style={styles.show_modal_button}
-        onPress={() => setModalVisible(true)}
+        onPress={() => setModalVisible(!modalVisible)}
       >
-        <Text style={styles.show_modal_text}>{'\u276F'}</Text>
+        <Text style={styles.show_modal_text}>{(modalVisible) ? '\u276E' : '\u276F'}</Text>
       </TouchableOpacity>
-
-      <Modal
-        visible={modalVisible}
-        transparent={true}
-        onRequestClose={() => setModalVisible(false)}
-      >
-        <Pressable
-          style={{flex: 1}}
-          onPress={(event) => {
-            if (event.target == event.currentTarget) setModalVisible(false)
-          }}
-        >
-          <View style={styles.calendar_wrapper}>
-            <FlatList
-              horizontal
-              data={dates}
-              initialNumToRender={1}
-              showsHorizontalScrollIndicator={false}
-              renderItem={renderItem}
-              pagingEnabled
-              keyExtractor={item => item.id}
-            />
-          </View>
-        </Pressable>
-      </Modal>
+      {(modalVisible) ? (<CalendarList dates={dates}/>) : null}
     </View>
   )
 }
@@ -164,7 +152,6 @@ const styles = StyleSheet.create({
     transform: [{ rotate: '90deg' }],
   },
   calendar_wrapper: {
-    marginTop: '50%',
-    backgroundColor: '#00000011',
+    backgroundColor: '#FFFFFF11',
   }
 })
