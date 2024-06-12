@@ -7,22 +7,32 @@ import {
 } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useFocusEffect } from "@react-navigation/native";
-import { useTheme } from '../contexts/ThemeContext';
 import { useCache } from "../contexts/CacheContext";
+import { ScreenProfileProps } from "../components/types";
+import { useSelector } from "react-redux";
+import { RootReducer } from "../store/store";
+import ChangeTheme from "../components/ChangeTheme";
 
-const Header = ({ university, currentTheme }) => {
+interface HeaderProps {
+  university: string;
+}
+
+const Header = ({ university }: HeaderProps) => {
+  const { colors } = useSelector((state: RootReducer) => state.themeReducer)
+
   return (
-    <View style={[styles.header, { backgroundColor: currentTheme.maincolor }]}>
+    <View style={[styles.header, { backgroundColor: colors.maincolor }]}>
       <Text style={styles.headerText}>{university}</Text>
     </View>
   );
 }
 
-export default function Profile({ navigation, route }) {
-  const { currentTheme, changeTheme } = useTheme()
+export default function Profile({ navigation, route }: ScreenProfileProps) {
+  const { colors } = useSelector((state: RootReducer) => state.themeReducer)
   const { clearCache, setGroupId } = useCache()
-  const [university, setUniversity] = useState(null)
-  const [group, setGroup] = useState(null)
+  const [university, setUniversity] = useState<string>('Университет не выбран')
+  const [group, setGroup] = useState<string>('не выбрана')
+  const [isVisible, setIsVisible] = useState<boolean>(false)
 
   const loadData = async () => {
     try {
@@ -31,11 +41,7 @@ export default function Profile({ navigation, route }) {
         setUniversity(data[0][1].toString())
         setGroup(data[1][1].toString())
       }
-      else {
-        setUniversity('Университет не выбран')
-        setGroup('не выбрана')
-      }
-    } catch (error) {
+    } catch (error: any) {
       console.log('Ошибка при загрузке данных из кэша', error.message)
     }
   }
@@ -47,15 +53,14 @@ export default function Profile({ navigation, route }) {
       const newGroupId = (route.params.group.id_group).toString()
       await AsyncStorage.multiSet([['user_university', university], ['user_group', group], ['user_id_group', newGroupId]])
       setGroupId(newGroupId)
-      route.params = null
-    } catch (error) {
+    } catch (error: any) {
       console.log('Ошибка при загрузке данных из кэша', error.message)
     }
   }
 
   useEffect(() => {
     loadData()
-  }, [])
+  }, [isVisible])
 
   useFocusEffect(() => {
     if (route.params) {
@@ -67,17 +72,18 @@ export default function Profile({ navigation, route }) {
 
   return (
     <View style={styles.container}>
-      <Header university={university} currentTheme={currentTheme} />
+      <Header university={university}/>
+      {isVisible && (<ChangeTheme isVisible={isVisible} setIsVisible={setIsVisible}/>)}
       {/* Дополнительный текст и кнопка */}
       <View style={styles.content}>
         <View style={styles.topContainer}>
-          <Text style={[styles.additionalText, { color: currentTheme.maincolor }]}>
+          <Text style={[styles.additionalText, { color: colors.maincolor }]}>
             Группа: {group}
           </Text>
           <TouchableOpacity
             style={[
               styles.button,
-              { backgroundColor: currentTheme.buttons_and_lessons },
+              { backgroundColor: colors.buttons_and_lessons },
             ]}
             onPress={() => {
               navigation.navigate('Universities');
@@ -91,7 +97,7 @@ export default function Profile({ navigation, route }) {
           {/*<TouchableOpacity
             style={[
               styles.button,
-              { backgroundColor: currentTheme.buttons_and_lessons },
+              { backgroundColor: colors.buttons_and_lessons },
             ]}
             onPress={() => {
               //при нажатии на кнопку поменять группу было бы славно
@@ -103,7 +109,7 @@ export default function Profile({ navigation, route }) {
           <TouchableOpacity
             style={[
               styles.button,
-              { backgroundColor: currentTheme.buttons_and_lessons },
+              { backgroundColor: colors.buttons_and_lessons },
             ]}
             onPress={() => {
               //при нажатии на кнопку поменять группу было бы славно
@@ -115,11 +121,9 @@ export default function Profile({ navigation, route }) {
           <TouchableOpacity
             style={[
               styles.button,
-              { backgroundColor: currentTheme.buttons_and_lessons },
+              { backgroundColor: colors.buttons_and_lessons },
             ]}
-            onPress={() => {
-              changeTheme();
-            }}
+            onPress={() => setIsVisible(true)}
           >
             <Text style={styles.buttonText}>Сменить тему</Text>
           </TouchableOpacity>
@@ -127,7 +131,7 @@ export default function Profile({ navigation, route }) {
           <TouchableOpacity
             style={[
               styles.button,
-              { backgroundColor: currentTheme.orange },
+              { backgroundColor: colors.alter },
             ]}
             onPress={() => {
               clearCache();

@@ -6,21 +6,39 @@ import {
   TouchableOpacity, 
 } from "react-native";
 import { styles } from "../styles/MainPageStyle.js";
+import { LessonType } from "./types.tsx";
+import { useSelector } from "react-redux";
+import { RootReducer } from "../store/store.tsx";
+
+interface LessonProps {
+  element: LessonType;
+}
+
+interface SlideLessonProps {
+  element: LessonType;
+  chk: boolean;
+}
+
+interface SlideProps {
+  elements: LessonType[] | undefined;
+}
 
 const date = new Date()
 const currentDateTime = { hour: date.getHours(), minutes: date.getMinutes(), dayNum: date.getDay() } //{hour: 10, minutes: 31, dayNum: 5}//
 
-const checkTime = (startTime, endTime) => {
-  var startTime = String(startTime).split(':').map(Number)
-  var endTime = String(endTime).split(':').map(Number)
+const checkTime = (startTimeStr: string, endTimesStr: string) => {
+  var startTime = startTimeStr.split(':').map(Number)
+  var endTime = endTimesStr.split(':').map(Number)
   return !((startTime[0] > currentDateTime.hour || startTime[0] == currentDateTime.hour && startTime[1] > currentDateTime.minutes) ||
            (endTime[0] < currentDateTime.hour || endTime[0] == currentDateTime.hour && endTime[1] < currentDateTime.minutes))
 }
 
-export function Lesson({ element, currentTheme }) {
+export function Lesson({ element }: LessonProps) {
+  const { colors } = useSelector((state: RootReducer) => state.themeReducer)
+
   var chk = checkTime(element.start_time, element.end_time) && currentDateTime.dayNum == element.weekday;
   return (
-    <TouchableOpacity style={[chk ? { backgroundColor: currentTheme.orange } : { backgroundColor: currentTheme.buttons_and_lessons }, styles.lesson]}>
+    <TouchableOpacity style={[chk ? { backgroundColor: colors.alter } : { backgroundColor: colors.buttons_and_lessons }, styles.lesson]}>
       <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center" }}>
         <Text style={[styles.time, chk ? { color: "black" } : {}]}>{element.start_time} - {element.end_time}</Text>
         <Text style={[styles.type, chk ? { color: "black" } : {}]}>{element.type}</Text>
@@ -40,9 +58,11 @@ export function Lesson({ element, currentTheme }) {
   );
 }
 
-function SlideLessonRender({ element, chk, currentTheme }) {
+function SlideLessonRender({ element, chk }: SlideLessonProps) {
+  const { colors } = useSelector((state: RootReducer) => state.themeReducer)
+
   return (
-    <TouchableOpacity style={[{ backgroundColor: chk ? currentTheme.orange : currentTheme.buttons_and_lessons }, styles.slide]}> 
+    <TouchableOpacity style={[{ backgroundColor: chk ? colors.alter : colors.buttons_and_lessons }, styles.slide]}> 
       <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center" }}>
         <Text style={[styles.time, chk ? { color: "black" } : {}]}>{element.start_time} - {element.end_time}</Text>
 
@@ -67,7 +87,7 @@ function SlideLessonRender({ element, chk, currentTheme }) {
   )
 }
 
-export function SlideLesson({ elements, currentTheme }) {
+export function SlideLesson({ elements }: SlideProps) {
   if (elements) {
     var chk = checkTime(elements[0].start_time, elements[0].end_time) && currentDateTime.dayNum == elements[0].weekday;
     return (
@@ -76,7 +96,7 @@ export function SlideLesson({ elements, currentTheme }) {
           horizontal
           data={elements}
           showsHorizontalScrollIndicator={false}
-          renderItem={({item}) => { return <SlideLessonRender element={item} chk={chk} len={elements.length} currentTheme={currentTheme}/> }}
+          renderItem={({item}) => { return <SlideLessonRender element={item} chk={chk}/> }}
           pagingEnabled
           snapToAlignment="center"
         />

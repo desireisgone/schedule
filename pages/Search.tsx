@@ -10,27 +10,33 @@ import {
   StyleSheet,
   TextInput,
 } from "react-native"
-import { globalStyles } from "../styles/style"
-import Header from "../components/Header.js";
+import Header from "../components/Header";
 import axios from "axios";
-import { useTheme } from "../contexts/ThemeContext";
+import { TeacherType } from "../components/types";
+import { useSelector } from "react-redux";
+import { RootReducer } from "../store/store";
 
-function Teacher({teacher, currentTheme}) {
+interface TeacherProps {
+  teacher: TeacherType;
+  color: string
+}
+
+function Teacher({ teacher, color }: TeacherProps) {
   return (
-    <TouchableOpacity style={[styles.teacher, {backgroundColor: currentTheme.buttons_and_lessons}]}>
+    <TouchableOpacity style={[styles.teacher, {backgroundColor: color}]}>
       <Text style={styles.teachertext}>{teacher.full_name}</Text>
     </TouchableOpacity>
   );
 }
 
 export default function Search() {
-  const { currentTheme, changeTheme } = useTheme()
-  const [teachers, setTeachers] = useState([])
-  const [search, setSearch] = useState("")
-  const [searchResult, setSearchResult] = useState(null)
-  const [chosenDay, setChosenDay] = useState(new Date().getDay());
+  const { colors } = useSelector((state: RootReducer) => state.themeReducer)
+  const [teachers, setTeachers] = useState<TeacherType[]>([])
+  const [search, setSearch] = useState<string>('')
+  const [searchResult, setSearchResult] = useState<TeacherType[]>([])
+  const [chosenDay, setChosenDay] = useState<number>(new Date().getDay());
   
-  const onPressFunc = (newDay) => {
+  const onPressFunc = (newDay: number) => {
     setChosenDay(newDay);
   };
 
@@ -38,14 +44,14 @@ export default function Search() {
     try {
       const response = await axios.get('http://localhost:3000/api/teachers')
       setTeachers(response.data)
-    } catch (error) {
+    } catch (error: any) {
       console.error('Ошибка при выполнении запроса:', error.message)
     }
   }
 
   useEffect(() => {
     if (!search) {
-      setSearchResult(null)
+      setSearchResult([])
     }
     else {
       const filteredTeachers = teachers.filter((teacher) =>
@@ -61,14 +67,15 @@ export default function Search() {
 
   return (
     <SafeAreaView style={{ flex: 1 }}>
-      <StatusBar style={ globalStyles.main } />
-      <Header onPressFunc={onPressFunc} currentTheme={currentTheme} chosenDay={chosenDay}/>
-      <View style={[styles.searchbar, {backgroundColor: currentTheme.light_for_search_and_daynumber}]}>
+      <StatusBar backgroundColor={ colors.maincolor } />
+      <Header onPressFunc={onPressFunc} chosenDay={chosenDay}/>
+      <View style={[styles.searchbar, {backgroundColor: colors.light_for_search_and_daynumber}]}>
         <Image source={require("../assets/searchInput.png")}/>
         <TextInput style={styles.textinput} placeholderTextColor="white" placeholder="Поиск" onChangeText={(text) => setSearch(text)} />
       </View>
-      <FlatList data={searchResult || teachers}
-                renderItem={({ item }) => <Teacher teacher={item} currentTheme={currentTheme} />}
+      <FlatList
+        data={searchResult || teachers}
+        renderItem={({ item }) => <Teacher teacher={item} color={colors.buttons_and_lessons} />}
       />
     </SafeAreaView>
   );

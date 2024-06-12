@@ -4,25 +4,27 @@ import {
   Text,
   FlatList,
   TouchableOpacity,
-  Image,
   TextInput
 } from "react-native";
 import axios from "axios";
-import { useTheme } from "../contexts/ThemeContext";
 import { styles } from "../styles/ChangeScreensStyle.js";
+import { ScreenGroupsProps, Group } from "./types.tsx";
+import { useSelector } from "react-redux";
+import { RootReducer } from "../store/store.tsx";
+import { Icon } from "./Icon.js";
 
-export default function ScreenGroups({ navigation, route }) {
-  const { currentTheme, changeTheme } = useTheme()
+export default function ScreenGroups({ navigation, route }: ScreenGroupsProps) {
+  const { colors } = useSelector((state: RootReducer) => state.themeReducer)
   const id_faculty = route.params.id_faculty
-  const [groups, setGroups] = useState(null)
+  const [groups, setGroups] = useState<Group[]>([])
   const [search, setSearch] = useState("")
-  const [searchResult, setSearchResult] = useState(null)
+  const [searchResult, setSearchResult] = useState<Group[] | null>(null)
 
   const fetchData = async () => {
     try {
       const response = await axios.get(`http://localhost:3000/api/groups/${id_faculty}`)
       setGroups(response.data)
-    } catch (error) {
+    } catch (error: any) {
       console.error('Ошибка при выполнении запроса:', error.message)
     }
   }
@@ -43,17 +45,17 @@ export default function ScreenGroups({ navigation, route }) {
   }, [])
 
   return (
-    <View style={[styles.container, {backgroundColor: currentTheme.maincolor}]}>
-      <View style={[styles.searchbar, {backgroundColor: currentTheme.light_for_search_and_daynumber}]}>
-          <Image source={require("../assets/searchInput.png")}/>
-          <TextInput style={styles.textinput} placeholderTextColor="white" placeholder="Поиск" onChangeText={(text) => setSearch(text)}/>
+    <View style={[styles.container, {backgroundColor: colors.maincolor}]}>
+      <View style={[styles.searchbar, {backgroundColor: colors.light_for_search_and_daynumber}]}>
+        <Icon name='search' size={20} style={{ color: 'white' }}/>
+        <TextInput style={styles.textinput} placeholderTextColor="white" placeholder="Поиск" onChangeText={(text) => setSearch(text)}/>
       </View>
       <FlatList data={searchResult || groups} contentContainerStyle={styles.flatListContainer} renderItem={({item}) => {
         return (
-          <TouchableOpacity style={[styles.optionItem, {backgroundColor: currentTheme.buttons_and_lessons}]} onPress={() => {
+          <TouchableOpacity style={[styles.optionItem, {backgroundColor: colors.buttons_and_lessons}]} onPress={() => {
             navigation.navigate('Profile', { group: item, university_title: route.params.university_title })
           }}>
-            <Text style={[styles.optionText, {color: currentTheme.white}]}>{item.title}</Text>
+            <Text style={[styles.optionText, {color: colors.background}]}>{item.title}</Text>
           </TouchableOpacity>
         )
       }}></FlatList>

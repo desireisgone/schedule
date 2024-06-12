@@ -5,36 +5,34 @@ import {
   StatusBar, 
   TouchableOpacity, 
   StyleSheet,
-  Image,
+  Text,
   TextInput
 } from "react-native";
-import Header from "../components/Header.js";
-import { useTheme } from "../contexts/ThemeContext";
-import { themes } from '../styles/style';
+import Header from "../components/Header";
+import { useSelector } from "react-redux";
+import { RootReducer } from "../store/store";
+import { Icon } from "../components/Icon";
 
-export default function NewScreen() {
-  const { currentTheme } = useTheme();
-  const [chosenDay, setChosenDay] = React.useState(new Date().getDay());
+export default function Notes() {
+  const { colors } = useSelector((state: RootReducer) => state.themeReducer)
+  const [chosenDay, setChosenDay] = React.useState<number>(new Date().getDay());
   
-  const onPressFunc = (newDay) => {
+  const onPressFunc = (newDay: number) => {
     setChosenDay(newDay);
   };
 
   return (
     <SafeAreaView style={{ flex: 1 }}>
-      <StatusBar style={currentTheme.maincolor} />
-      <Header onPressFunc={onPressFunc} currentTheme={currentTheme} chosenDay={chosenDay}/>
+      <StatusBar backgroundColor={colors.maincolor}/>
+      <Header onPressFunc={onPressFunc} chosenDay={chosenDay}/>
       <View>
-        <View style={[styles.searchbar, {backgroundColor: currentTheme.light_for_search_and_daynumber}]}>
-          <Image source={require("../assets/searchInput.png")}/>
+        <View style={[styles.searchbar, {backgroundColor: colors.light_for_search_and_daynumber}]}>
+          <Icon name='search'/>
           <TextInput style={styles.textinput} placeholderTextColor="white" placeholder="Поиск" />
         </View>
 
         <TouchableOpacity style={{ left: 322 }}>
-          <Image
-            style={{ width: 50, height: 50}}
-            source={currentTheme === themes.green ? (require('../assets/plus_2.png')) : (require('../assets/plus.png'))}
-          />
+          <Text style={{ fontSize: 50, backgroundColor: colors.buttons_and_lessons }} >+</Text>
         </TouchableOpacity>
       </View>
     </SafeAreaView>

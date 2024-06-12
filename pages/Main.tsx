@@ -5,28 +5,29 @@ import {
   Text, 
   StatusBar, 
   FlatList, 
-  TouchableOpacity, 
-  Image,
+  TouchableOpacity,
 } from "react-native";
-import Header from "../components/Header.js";
+import Header from "../components/Header";
 import axios from "axios";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { useTheme } from "../contexts/ThemeContext.js";
-import { useCache } from "../contexts/CacheContext.js";
 import { useFocusEffect } from "@react-navigation/native";
-import { themes } from '../styles/style.js';
-import { Lesson, SlideLesson } from "../components/Lesson.js";
-import { styles } from "../styles/MainPageStyle.js";
-import Calendar from "../components/Calendar.js";
-import DayPicker from "../components/DayPicker.js";
+import { Lesson, SlideLesson } from "../components/Lesson";
+import { styles } from "../styles/MainPageStyle";
+import { Icon } from "../components/Icon";
+import { useSelector } from "react-redux";
+import { RootReducer } from "../store/store";
+import { useCache } from "../contexts/CacheContext";
+import { LessonType } from "../components/types";
+import Calendar from "../components/Calendar";
+import DayPicker from "../components/DayPicker";
 
 export default function Main() {
-  const { currentTheme, changeTheme } = useTheme()
+  const { colors } = useSelector((state: RootReducer) => state.themeReducer)
   const { groupId } = useCache()
-  const [chosenDay, setChosenDay] = useState((new Date()).getDay())
-  const [responseData, setResponseData] = useState(null)
-  const [chis_znam, setCZ] = useState()
-  const [subgroups, setSubgroups] = useState()
+  const [chosenDay, setChosenDay] = useState<number>((new Date()).getDay())
+  const [responseData, setResponseData] = useState<LessonType[]>([])
+  const [chis_znam, setCZ] = useState<string>()
+  const [subgroups, setSubgroups] = useState<Map<string, LessonType[]> | null>()
 
   const setWeekType = () => {
     const firstSeptember = new Date('2023-09-01')
@@ -34,16 +35,16 @@ export default function Main() {
     mondayOfFirstWeek.setDate(firstSeptember.getDate() - firstSeptember.getDay() + 1) // дата понедельника недели с 1 сентября
 
     const currentDate = new Date()
-    const differenceInDays = Math.floor((currentDate - mondayOfFirstWeek) / (1000 * 60 * 60 * 24))
+    const differenceInDays = Math.floor((currentDate.valueOf() - mondayOfFirstWeek.valueOf()) / (1000 * 60 * 60 * 24))
     const currentWeekNumber = Math.floor(differenceInDays / 7)
     setCZ(currentWeekNumber % 2 === 0 ? 'чис.' : 'знам.')
   }
 
-  const onPressFunc = (newDay) => {
+  const onPressFunc = (newDay: number) => {
     setChosenDay(newDay)
   }
 
-  const subgroupSearch = (res) => {
+  const subgroupSearch = (res: LessonType[]) => {
     let multiLessons = new Map() // список массивов с одинаковыми парами для разных подгрупп
     let singleLessons = [] // список пар без подгрупп, либо по одной подгруппе из каждой пар с множеством подгрупп
     for (let lesson of res) {
@@ -67,11 +68,11 @@ export default function Main() {
 
   const fetchData = async () => {
     try {
-      const response = await axios.get(`http://localhost:3000/api/lessons/byGroup/${groupId ? groupId : "0"}`)
+      const response = await axios.get(`http://localhost:3000/api/lessons/byGroup/${groupId}`)
       subgroupSearch(response.data)
       //await AsyncStorage.setItem('user_schedule', JSON.stringify(response.data))
       console.log('Расписание загружено с сервера')
-    } catch (error) {
+    } catch (error: any) {
       console.log('Ошибка при выполнении запроса:', error.message)
     }
   }
@@ -86,7 +87,7 @@ export default function Main() {
       else {
         fetchData()
       }
-    } catch (error) {
+    } catch (error: any) {
       console.log('Ошибка при загрузке данных из кэша', error.message)
     }
   }
@@ -103,28 +104,30 @@ export default function Main() {
 
   return (
     <SafeAreaView style={{ flex: 1 }}>
-      <StatusBar style={ currentTheme.maincolor } />
-      {/*<Header onPressFunc={onPressFunc} currentTheme={currentTheme} chosenDay={chosenDay}/>*/}
-      <DayPicker onPressFunc={onPressFunc} currentTheme={currentTheme} chosenDay={chosenDay}/>
+      <StatusBar backgroundColor={colors.maincolor}/>
+      
+      <DayPicker onPressFunc={onPressFunc} chosenDay={chosenDay}/>
       <Calendar/>
       <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center"}}>
-        <Text style={[styles.weektype, {color: currentTheme.maincolor}]}>{ chis_znam === 'чис.' ? "Числитель" : "Знаменатель" }</Text>
+        <Text style={[styles.weektype, {color: colors.maincolor}]}>{ chis_znam === 'чис.' ? "Числитель" : "Знаменатель" }</Text>
         <TouchableOpacity style={{ right: 20 }}>
-          <Image
-            style={{ width: 20, height: 20, margin: 10}}
-            source={currentTheme === themes.green ? (require('../assets/filter_2.png')) : (require('../assets/filter.png'))}
-          />
+          <Icon name='filter' size={25} style={{margin: 10, color: colors.maincolor}}/>
         </TouchableOpacity>
       </View>
-      <FlatList style={{ width: "100%" }} data={responseData} renderItem={( {item} ) => {
-        if (item.weekday === chosenDay && (item.chis_znam === chis_znam || item.chis_znam === '')) {
-          if (item.subgroup !== '') {
-            return <SlideLesson elements={subgroups.get(item.start_time + item.weekday + item.chis_znam)} currentTheme={currentTheme}/>
+      <FlatList
+        style={{ width: "100%" }}
+        data={responseData}
+        renderItem={({ item }) => {
+          if (item.weekday === chosenDay && (item.chis_znam === chis_znam || item.chis_znam === '')) {
+            if (item.subgroup !== '') {
+              return <SlideLesson elements={subgroups?.get(item.start_time + item.weekday + item.chis_znam)}/>
+            }
+            return <Lesson element={item}/>
           }
-          return <Lesson element={item} currentTheme={currentTheme}/>
-        }
-        return
-      }}/>
+          return null
+        }}
+      />
+      
     </SafeAreaView>
   );
 }

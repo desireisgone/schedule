@@ -5,26 +5,41 @@ import {
   TouchableOpacity, 
   StyleSheet
 } from "react-native";
+import { useSelector } from "react-redux";
+import { RootReducer } from "../store/store";
+
+interface DayPickerProps {
+  onPressFunc: Function;
+  chosenDay: number;
+}
+
+interface DayElementProps {
+  element: {
+    day: number;
+    weekday: number;
+  }
+}
 
 const weekdays = ['Вс', 'Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб']
 
-export default function DayPicker({ onPressFunc, currentTheme, chosenDay }) {
+export default function DayPicker({ onPressFunc, chosenDay }: DayPickerProps) {
+  const { colors } = useSelector((state: RootReducer) => state.themeReducer)
 
-  const DayElement = ({element}) => {
+  const DayElement = ({element}: DayElementProps) => {
     let colorOfDayNumber = ''
-    if (element.weekday === chosenDay) colorOfDayNumber = currentTheme.chosen_text
-    else if (element.weekday === 0) colorOfDayNumber = currentTheme.light_for_search_and_daynumber
+    if (element.weekday === chosenDay) colorOfDayNumber = colors.chosen_text
+    else if (element.weekday === 0) colorOfDayNumber = colors.light_for_search_and_daynumber
     else colorOfDayNumber = 'white'
 
     return (
       <TouchableOpacity
-        style={ [styles.dayItem, (element.weekday === chosenDay) ? {backgroundColor: currentTheme.orange} : {}] }
+        style={ [styles.dayItem, (element.weekday === chosenDay) ? {backgroundColor: colors.alter} : {}] }
         onPress={() => {onPressFunc(element.weekday)}}
       >
         <Text
           style={ [styles.weekday, (element.weekday === chosenDay) 
-                                   ? {color: currentTheme.chosen_text} 
-                                   : {color: currentTheme.light_for_search_and_daynumber}] }
+                                   ? {color: colors.chosen_text} 
+                                   : {color: colors.light_for_search_and_daynumber}] }
         >{weekdays[element.weekday]}</Text>
         <Text style={[styles.day, {color: colorOfDayNumber}]}>{element.day}</Text>
       </TouchableOpacity>
@@ -51,7 +66,7 @@ export default function DayPicker({ onPressFunc, currentTheme, chosenDay }) {
   const dates = getCurrentWeekDates()
 
   return (
-    <View style={[{backgroundColor: currentTheme.maincolor}, styles.main]}>
+    <View style={[{backgroundColor: colors.maincolor}, styles.main]}>
       {dates.map((item, index) => <DayElement element={item} key={index}/>)}
     </View>
   )

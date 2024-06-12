@@ -7,20 +7,21 @@
 
 import 'react-native-gesture-handler';
 import React from 'react';
+import MainNavigator from './navigators/MainNavigator';
 import { NavigationContainer } from '@react-navigation/native';
-import MainNavigator from './navigators/MainNavigator.js';
-import { ThemeProvider } from './contexts/ThemeContext';
 import { CacheProvider } from './contexts/CacheContext';
+import { Provider } from 'react-redux';
+import { store } from './store/store';
 
 export function App() {
   return (
-    <CacheProvider>
-      <ThemeProvider>
+    <Provider store={store}>
+      <CacheProvider>
         <NavigationContainer>
           <MainNavigator />
         </NavigationContainer>
-      </ThemeProvider>
-    </CacheProvider>
+      </CacheProvider>
+    </Provider>
   );
 }
 

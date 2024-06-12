@@ -1,15 +1,33 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   View, 
   TouchableOpacity, 
-  Modal,
   Text, 
-  StyleSheet, 
-  VirtualizedList, 
+  StyleSheet,
   Dimensions,
-  Pressable,
   FlatList
 } from "react-native";
+
+interface IDate {
+  isCurMon: boolean;
+  date: number;
+}
+
+interface CalendarWeekProps {
+  week: IDate[]
+}
+
+interface CalendarMonthProps {
+  weeks: IDate[][];
+  monthNum: number;
+}
+
+interface CalendarListProps {
+  dates: {
+    id: number;
+    weeks: IDate[][]
+  }[]
+}
 
 const months = [
   'Январь',
@@ -26,14 +44,14 @@ const months = [
   'Декабрь',
 ]
 
-function getStartOfWeek(date) {
+function getStartOfWeek(date: Date) {
   const dayOfWeek = date.getDay()
   const res = new Date(date)
   res.setDate(date.getDate() - dayOfWeek + (dayOfWeek === 0 ? -6 : 1))
   return res
 }
 
-function monthSplit(startOfMonth) {
+function monthSplit(startOfMonth: Date) {
   const res = []
   let tmpDate = getStartOfWeek(startOfMonth)
   for (let i = 0; i < 6; i++) {
@@ -47,7 +65,7 @@ function monthSplit(startOfMonth) {
   return res
 }
 
-const CalendarWeek = React.memo(({ week }) => {
+const CalendarWeek = React.memo<CalendarWeekProps>(({ week }) => {
   return (
     <View style={styles.week}>
       {week.map((item, index) => (
@@ -59,7 +77,7 @@ const CalendarWeek = React.memo(({ week }) => {
   )
 })
 
-const CalendarMonth = React.memo(({ weeks, monthNum }) => {
+const CalendarMonth = React.memo<CalendarMonthProps>(({ weeks, monthNum }) => {
   return (
     <View style={styles.month}>
       <Text style={styles.month_title}>{months[monthNum]}</Text>
@@ -70,7 +88,7 @@ const CalendarMonth = React.memo(({ weeks, monthNum }) => {
   )
 })
 
-const CalendarList = React.memo(({ dates }) => {
+const CalendarList = React.memo<CalendarListProps>(({ dates }) => {
   return (
     <View style={styles.calendar_wrapper}>
       <FlatList
@@ -80,7 +98,7 @@ const CalendarList = React.memo(({ dates }) => {
         showsHorizontalScrollIndicator={false}
         renderItem={({item}) => <CalendarMonth weeks={item.weeks} monthNum={item.id}/>}
         pagingEnabled
-        keyExtractor={item => item.id}
+        keyExtractor={item => item.id.toString()}
       />
     </View>
   )
@@ -152,6 +170,6 @@ const styles = StyleSheet.create({
     transform: [{ rotate: '90deg' }],
   },
   calendar_wrapper: {
-    backgroundColor: '#FFFFFF11',
-  }
+    backgroundColor: '#FFFFFF7F',
+  },
 })

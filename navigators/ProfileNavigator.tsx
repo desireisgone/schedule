@@ -1,16 +1,18 @@
 import React from "react"
 import { Text } from "react-native"
 import { createStackNavigator } from "@react-navigation/stack"
-import { useTheme } from '../contexts/ThemeContext'
-import ScreenUniversities from "../components/ChangeUniversity.js"
-import ScreenFaculties from "../components/ChangeFaculty.js"
-import ScreenGroups from "../components/ChangeGroup.js"
-import Profile from "../pages/Profile.js"
+import ScreenUniversities from "../components/ChangeUniversity"
+import ScreenFaculties from "../components/ChangeFaculty"
+import ScreenGroups from "../components/ChangeGroup"
+import Profile from "../pages/Profile"
+import { useSelector } from "react-redux"
+import { RootReducer } from "../store/store"
+import { StackParamList } from "../components/types"
 
-const Stack = createStackNavigator()
+const Stack = createStackNavigator<StackParamList>()
 
 export default function ProfileNavigator() {
-  const { currentTheme, changeTheme } = useTheme()
+  const { colors } = useSelector((state: RootReducer) => state.themeReducer)
   return (
     <Stack.Navigator>
       <Stack.Screen name="Profile" component={Profile} options={{ headerShown: false }} />
@@ -19,7 +21,7 @@ export default function ProfileNavigator() {
         component={ScreenUniversities}
         options={{
           title: "Выберите учебное заведение",
-          headerStyle: { backgroundColor: currentTheme.maincolor, height: 100 },
+          headerStyle: { backgroundColor: colors.maincolor, height: 100 },
           headerTintColor: 'white',
           headerTitle: () => (
             <Text style={{
@@ -39,7 +41,7 @@ export default function ProfileNavigator() {
         component={ScreenFaculties}
         options={{
           title: "Выберите факультет",
-          headerStyle: { backgroundColor: currentTheme.maincolor, height: 70 },
+          headerStyle: { backgroundColor: colors.maincolor, height: 70 },
           headerTintColor: 'white',
           headerTitle: () => (
             <Text style={{
@@ -59,7 +61,7 @@ export default function ProfileNavigator() {
         component={ScreenGroups}
         options={{
           title: "Выберите группу",
-          headerStyle: { backgroundColor: currentTheme.maincolor, height: 70 },
+          headerStyle: { backgroundColor: colors.maincolor, height: 70 },
           headerTintColor: 'white',
           headerTitle: () => (
             <Text style={{
