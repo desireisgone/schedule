@@ -5,80 +5,67 @@ import {
   TouchableOpacity,
   StyleSheet
 } from "react-native";
-import AsyncStorage from "@react-native-async-storage/async-storage";
+import TitleHeader from "../components/TitleHeader";
 import { useFocusEffect } from "@react-navigation/native";
-import { useCache } from "../contexts/CacheContext";
 import { ScreenProfileProps } from "../components/types";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { RootReducer } from "../store/store";
 import ChangeTheme from "../components/ChangeTheme";
-
-interface HeaderProps {
-  university: string;
-}
-
-const Header = ({ university }: HeaderProps) => {
-  const { colors } = useSelector((state: RootReducer) => state.themeReducer)
-
-  return (
-    <View style={[styles.header, { backgroundColor: colors.maincolor }]}>
-      <Text style={styles.headerText}>{university}</Text>
-    </View>
-  );
-}
+import { resetAll, setUserGroup, setUserIdGroup, setUserUniversity } from "../store/reducers/userDataReducer";
 
 export default function Profile({ navigation, route }: ScreenProfileProps) {
   const { colors } = useSelector((state: RootReducer) => state.themeReducer)
-  const { clearCache, setGroupId } = useCache()
-  const [university, setUniversity] = useState<string>('Университет не выбран')
-  const [group, setGroup] = useState<string>('не выбрана')
+  const { user_group, user_university, user_id_group } = useSelector((state: RootReducer) => state.userDataReducer)
+  const dispatch = useDispatch()
+  //const [university, setUniversity] = useState<string>('Университет не выбран')
+  //const [group, setGroup] = useState<string>('не выбрана')
   const [isVisible, setIsVisible] = useState<boolean>(false)
 
-  const loadData = async () => {
-    try {
-      const data = await AsyncStorage.multiGet(['user_university', 'user_group'])
-      if (data[0][1] !== null && data[1][1] !== null) {
-        setUniversity(data[0][1].toString())
-        setGroup(data[1][1].toString())
-      }
-    } catch (error: any) {
-      console.log('Ошибка при загрузке данных из кэша', error.message)
-    }
-  }
+  //const loadData = async () => {
+  //  try {
+  //    const data = await AsyncStorage.multiGet(['user_university', 'user_group'])
+  //    if (data[0][1] !== null && data[1][1] !== null) {
+  //      setUniversity(data[0][1].toString())
+  //      setGroup(data[1][1].toString())
+  //    }
+  //  } catch (error: any) {
+  //    console.log('Ошибка при загрузке данных из кэша', error.message)
+  //  }
+  //}
 
   const loadAfterChange = async () => {
     try {
-      setUniversity(route.params.university_title)
-      setGroup(route.params.group.title)
-      const newGroupId = (route.params.group.id_group).toString()
-      await AsyncStorage.multiSet([['user_university', university], ['user_group', group], ['user_id_group', newGroupId]])
-      setGroupId(newGroupId)
+      dispatch(setUserUniversity(route.params.university_title))
+      dispatch(setUserGroup(route.params.group.title))
+      //const newGroupId = ()
+      //await AsyncStorage.multiSet([['user_university', university], ['user_group', group], ['user_id_group', newGroupId]])
+      dispatch(setUserIdGroup(route.params.group.id_group.toString()))
     } catch (error: any) {
       console.log('Ошибка при загрузке данных из кэша', error.message)
     }
   }
 
   useEffect(() => {
-    loadData()
+    //loadData()
   }, [isVisible])
 
   useFocusEffect(() => {
     if (route.params) {
       loadAfterChange()
     } else {
-      loadData()
+      //loadData()
     }
   })
 
   return (
     <View style={styles.container}>
-      <Header university={university}/>
+      <TitleHeader title={user_university}/>
       {isVisible && (<ChangeTheme isVisible={isVisible} setIsVisible={setIsVisible}/>)}
       {/* Дополнительный текст и кнопка */}
       <View style={styles.content}>
         <View style={styles.topContainer}>
           <Text style={[styles.additionalText, { color: colors.maincolor }]}>
-            Группа: {group}
+            Группа: {user_group}
           </Text>
           <TouchableOpacity
             style={[
@@ -134,7 +121,7 @@ export default function Profile({ navigation, route }: ScreenProfileProps) {
               { backgroundColor: colors.alter },
             ]}
             onPress={() => {
-              clearCache();
+              dispatch(resetAll())
             }}
           >
             <Text style={styles.buttonText}>Очистить кэш</Text>
@@ -147,16 +134,6 @@ export default function Profile({ navigation, route }: ScreenProfileProps) {
 };
 
 const styles = StyleSheet.create({
-  header: {
-    height: "9%",
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  headerText: {
-    color: "white",
-    fontSize: 25,
-    fontFamily: 'JetBrainsMono-Bold',
-  },
   container: {
     flex: 1,
   },

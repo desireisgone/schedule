@@ -11,16 +11,19 @@ import MainNavigator from './navigators/MainNavigator';
 import { NavigationContainer } from '@react-navigation/native';
 import { CacheProvider } from './contexts/CacheContext';
 import { Provider } from 'react-redux';
-import { store } from './store/store';
+import { PersistGate } from 'redux-persist/integration/react';
+import { store, persistor } from './store/store';
 
 export function App() {
   return (
     <Provider store={store}>
-      <CacheProvider>
-        <NavigationContainer>
-          <MainNavigator />
-        </NavigationContainer>
-      </CacheProvider>
+      <PersistGate persistor={persistor} >
+        <CacheProvider>
+          <NavigationContainer>
+            <MainNavigator />
+          </NavigationContainer>
+        </CacheProvider>
+      </PersistGate>
     </Provider>
   );
 }

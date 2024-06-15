@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
 import {
-  Image,
   View, 
   SafeAreaView, 
   Text,  
@@ -10,11 +9,12 @@ import {
   StyleSheet,
   TextInput,
 } from "react-native"
-import Header from "../components/Header";
+import TitleHeader from "../components/TitleHeader";
 import axios from "axios";
 import { TeacherType } from "../components/types";
 import { useSelector } from "react-redux";
 import { RootReducer } from "../store/store";
+import { Icon } from "../components/Icon";
 
 interface TeacherProps {
   teacher: TeacherType;
@@ -34,11 +34,7 @@ export default function Search() {
   const [teachers, setTeachers] = useState<TeacherType[]>([])
   const [search, setSearch] = useState<string>('')
   const [searchResult, setSearchResult] = useState<TeacherType[]>([])
-  const [chosenDay, setChosenDay] = useState<number>(new Date().getDay());
-  
-  const onPressFunc = (newDay: number) => {
-    setChosenDay(newDay);
-  };
+  //const [chosenDay, setChosenDay] = useState<number>(new Date().getDay());
 
   const fetchData = async () => {
     try {
@@ -68,9 +64,9 @@ export default function Search() {
   return (
     <SafeAreaView style={{ flex: 1 }}>
       <StatusBar backgroundColor={ colors.maincolor } />
-      <Header onPressFunc={onPressFunc} chosenDay={chosenDay}/>
+      <TitleHeader title={"Преподаватели"}/>
       <View style={[styles.searchbar, {backgroundColor: colors.light_for_search_and_daynumber}]}>
-        <Image source={require("../assets/searchInput.png")}/>
+        <Icon name='search' size={20} color='white'/>
         <TextInput style={styles.textinput} placeholderTextColor="white" placeholder="Поиск" onChangeText={(text) => setSearch(text)} />
       </View>
       <FlatList

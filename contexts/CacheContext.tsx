@@ -17,6 +17,10 @@ export const useCache = () => {
   return useContext(CacheContext)
 }
 
+const getGroup = async () => {
+  return await AsyncStorage.getItem('user_group')
+}
+
 export const CacheProvider = ({ children }: ProviderProps) => {
   const [groupId, setGroupId] = useState<string>('')
 

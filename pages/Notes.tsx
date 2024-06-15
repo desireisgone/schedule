@@ -8,65 +8,69 @@ import {
   Text,
   TextInput
 } from "react-native";
-import Header from "../components/Header";
+import TitleHeader from "../components/TitleHeader";
 import { useSelector } from "react-redux";
 import { RootReducer } from "../store/store";
 import { Icon } from "../components/Icon";
 
 export default function Notes() {
   const { colors } = useSelector((state: RootReducer) => state.themeReducer)
-  const [chosenDay, setChosenDay] = React.useState<number>(new Date().getDay());
-  
-  const onPressFunc = (newDay: number) => {
-    setChosenDay(newDay);
-  };
+  //const [chosenDay, setChosenDay] = React.useState<number>(new Date().getDay());
 
   return (
     <SafeAreaView style={{ flex: 1 }}>
       <StatusBar backgroundColor={colors.maincolor}/>
-      <Header onPressFunc={onPressFunc} chosenDay={chosenDay}/>
-      <View>
+      <TitleHeader title={"Задачи"}/>
+      <View style={styles.options}>
         <View style={[styles.searchbar, {backgroundColor: colors.light_for_search_and_daynumber}]}>
-          <Icon name='search'/>
+          <Icon name='search' size={20} color='white'/>
           <TextInput style={styles.textinput} placeholderTextColor="white" placeholder="Поиск" />
         </View>
-
-        <TouchableOpacity style={{ left: 322 }}>
-          <Text style={{ fontSize: 50, backgroundColor: colors.buttons_and_lessons }} >+</Text>
+        <TouchableOpacity style={[styles.plus_button, { backgroundColor: colors.buttons_and_lessons }]}>
+          <Icon name='plus' size={30} color='white'/>
         </TouchableOpacity>
+      </View>
+
+      <View style={styles.content}>
+
       </View>
     </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
+  options: {
+    paddingVertical: 20,
+    alignSelf: 'center',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    width: '90%',
+    gap: 10
+  },
+  content: {
+
+  },
+  plus_button: {
+    borderRadius: 10,
+    alignItems: 'center',
+    alignSelf: 'center',
+    padding: 5,
+  },
   searchbar: {
+    flex: 1,
+    display: "flex",
     borderRadius: 10,
     flexDirection: "row",
     alignItems: "center",
-    width: "90%",
-    marginVertical: 20,
     paddingHorizontal: 10,
     alignSelf: "center",
-    },
-    textinput: {
+  },
+  textinput: {
     color: "white",
     verticalAlign: "middle",
     display: "flex",
     fontSize: 20,
     fontFamily: 'JetBrainsMono-Light',
     fontWeight: '500',
-  },
-  daySelectorContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-around',
-    alignItems: 'center',
-    marginTop: 10,
-    marginBottom: 10,
-  },
-  daySelectorItem: {
-    padding: 10,
-    borderRadius: 5,
-    backgroundColor: 'transparent',
   },
 });

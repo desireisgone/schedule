@@ -68,7 +68,7 @@ export default function Main() {
 
   const fetchData = async () => {
     try {
-      const response = await axios.get(`http://localhost:3000/api/lessons/byGroup/${groupId}`)
+      const response = await axios.get('http://localhost:3000/api/lessons/byGroup/' + groupId)
       subgroupSearch(response.data)
       //await AsyncStorage.setItem('user_schedule', JSON.stringify(response.data))
       console.log('Расписание загружено с сервера')
@@ -110,9 +110,9 @@ export default function Main() {
       <Calendar/>
       <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center"}}>
         <Text style={[styles.weektype, {color: colors.maincolor}]}>{ chis_znam === 'чис.' ? "Числитель" : "Знаменатель" }</Text>
-        <TouchableOpacity style={{ right: 20 }}>
+        {/*<TouchableOpacity style={{ right: 20 }}>
           <Icon name='filter' size={25} style={{margin: 10, color: colors.maincolor}}/>
-        </TouchableOpacity>
+        </TouchableOpacity>*/}
       </View>
       <FlatList
         style={{ width: "100%" }}
