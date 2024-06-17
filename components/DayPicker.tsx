@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useCallback, useMemo } from "react";
 import {
   View,
   Text,
@@ -14,63 +14,67 @@ interface DayPickerProps {
 }
 
 interface DayElementProps {
+  onPressFunc: Function;
+  isChosen: boolean;
   element: {
     day: number;
     weekday: number;
   }
 }
 
-const weekdays = ['Вс', 'Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб']
+const getCurrentWeekDates = (currentDate: Date) => {
+  const currentDay = currentDate.getDay() === 0 ? 7 : currentDate.getDay()
+  const weekStart = new Date(currentDate)
+  const difference = currentDay - 1
+  weekStart.setDate(currentDate.getDate() - difference)
+  const weekDates = []
+  for (let i = 0; i < 7; i++) {
+    const day = new Date(weekStart)
+    day.setDate(weekStart.getDate() + i)
+    weekDates.push({ day: day.getDate(), weekday: (i + 1) % 7 })
+  }
+  return weekDates
+}
 
-export default function DayPicker({ onPressFunc, chosenDay }: DayPickerProps) {
+const DayElement = React.memo(({ element, isChosen, onPressFunc }: DayElementProps) => {
+  const weekdays = useMemo(() => ['Вс', 'Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб'], [])
   const { colors } = useSelector((state: RootReducer) => state.themeReducer)
-
-  const DayElement = ({element}: DayElementProps) => {
-    let colorOfDayNumber = ''
-    if (element.weekday === chosenDay) colorOfDayNumber = colors.chosen_text
-    else if (element.weekday === 0) colorOfDayNumber = colors.light_for_search_and_daynumber
-    else colorOfDayNumber = 'white'
-
-    return (
-      <TouchableOpacity
-        style={ [styles.dayItem, (element.weekday === chosenDay) ? {backgroundColor: colors.alter} : {}] }
-        onPress={() => {onPressFunc(element.weekday)}}
-      >
-        <Text
-          style={ [styles.weekday, (element.weekday === chosenDay) 
-                                   ? {color: colors.chosen_text} 
-                                   : {color: colors.light_for_search_and_daynumber}] }
-        >{weekdays[element.weekday]}</Text>
-        <Text style={[styles.day, {color: colorOfDayNumber}]}>{element.day}</Text>
-      </TouchableOpacity>
-    )
-  }
-
-  const getCurrentWeekDates = () => {
-    const currentDate = new Date()
-    const currentDay = currentDate.getDay() === 0 ? 7 : currentDate.getDay()
-    const weekStart = new Date(currentDate)
-    const difference = currentDay - 1
-
-    weekStart.setDate(currentDate.getDate() - difference)
-
-    const weekDates = []
-    for (let i = 0; i < 7; i++) {
-      const day = new Date(weekStart)
-      day.setDate(weekStart.getDate() + i)
-      weekDates.push({ day: day.getDate(), weekday: (i + 1) % 7 })
-    }
-    return weekDates
-  }
-
-  const dates = getCurrentWeekDates()
+  let colorOfDayNumber = ''
+  if (isChosen) colorOfDayNumber = colors.chosen_text
+  else if (element.weekday === 0) colorOfDayNumber = colors.light_for_search_and_daynumber
+  else colorOfDayNumber = 'white'
 
   return (
+    <TouchableOpacity
+      style={ [styles.dayItem, isChosen ? {backgroundColor: colors.alter} : {}] }
+      onPress={() => {onPressFunc(element.weekday)}}
+    >
+      <Text
+        style={ [styles.weekday, isChosen
+                                   ? {color: colors.chosen_text} 
+                                   : {color: colors.light_for_search_and_daynumber}] }
+      >{weekdays[element.weekday]}</Text>
+      <Text style={[styles.day, {color: colorOfDayNumber}]}>{element.day}</Text>
+    </TouchableOpacity>
+  )
+})
+
+export default React.memo(function DayPicker({ onPressFunc, chosenDay }: DayPickerProps) {
+  const { colors } = useSelector((state: RootReducer) => state.themeReducer)
+  const dates = useMemo(() => getCurrentWeekDates(new Date), [])
+  
+  return (
     <View style={[{backgroundColor: colors.maincolor}, styles.main]}>
-      {dates.map((item, index) => <DayElement element={item} key={index}/>)}
+      {dates.map((item, index) =>
+        <DayElement
+          element={item}
+          isChosen={item.weekday == chosenDay}
+          onPressFunc={onPressFunc}
+          key={index}
+        />)}
     </View>
   )
-}
+})
 
 const styles = StyleSheet.create({
   dayItem: {

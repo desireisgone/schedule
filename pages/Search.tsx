@@ -70,7 +70,7 @@ export default function Search() {
         <TextInput style={styles.textinput} placeholderTextColor="white" placeholder="Поиск" onChangeText={(text) => setSearch(text)} />
       </View>
       <FlatList
-        data={searchResult || teachers}
+        data={(searchResult.length == 0) ? teachers : searchResult}
         renderItem={({ item }) => <Teacher teacher={item} color={colors.buttons_and_lessons} />}
       />
     </SafeAreaView>
@@ -99,7 +99,7 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     width: "90%",
     alignSelf: "center",
-    margin: 10,
+    margin: 5,
     padding: 10,
   },
   teachertext: {

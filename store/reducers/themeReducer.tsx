@@ -9,7 +9,7 @@ const themeSlice = createSlice({
       state.colors = action.payload.colors
       state.dark = action.payload.dark
     }
-  },
+  }
 })
 
 export const { setTheme } = themeSlice.actions

@@ -104,7 +104,7 @@ const CalendarList = React.memo<CalendarListProps>(({ dates }) => {
   )
 })
 
-export default function Calendar({  }) {
+export default React.memo(function Calendar({  }) {
   const [modalVisible, setModalVisible] = useState(false)
 
   const dates = []
@@ -124,7 +124,7 @@ export default function Calendar({  }) {
       {(modalVisible) ? (<CalendarList dates={dates}/>) : null}
     </View>
   )
-}
+})
 
 const styles = StyleSheet.create({
   container: {

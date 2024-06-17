@@ -65,5 +65,6 @@ export const styles = StyleSheet.create({
     fontWeight: '700',
     letterSpacing: 0.60,
     marginLeft: 20,
+    marginVertical: 10,
   }
 })

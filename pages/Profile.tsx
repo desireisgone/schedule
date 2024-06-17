@@ -5,57 +5,47 @@ import {
   TouchableOpacity,
   StyleSheet
 } from "react-native";
+import axios from "axios";
 import TitleHeader from "../components/TitleHeader";
-import { useFocusEffect } from "@react-navigation/native";
 import { ScreenProfileProps } from "../components/types";
 import { useDispatch, useSelector } from "react-redux";
 import { RootReducer } from "../store/store";
 import ChangeTheme from "../components/ChangeTheme";
-import { resetAll, setUserGroup, setUserIdGroup, setUserUniversity } from "../store/reducers/userDataReducer";
+import { resetAll, setUserGroup, setUserIdGroup, setUserSchedule, setUserUniversity } from "../store/reducers/userDataReducer";
 
 export default function Profile({ navigation, route }: ScreenProfileProps) {
   const { colors } = useSelector((state: RootReducer) => state.themeReducer)
   const { user_group, user_university, user_id_group } = useSelector((state: RootReducer) => state.userDataReducer)
   const dispatch = useDispatch()
-  //const [university, setUniversity] = useState<string>('Университет не выбран')
-  //const [group, setGroup] = useState<string>('не выбрана')
   const [isVisible, setIsVisible] = useState<boolean>(false)
 
-  //const loadData = async () => {
-  //  try {
-  //    const data = await AsyncStorage.multiGet(['user_university', 'user_group'])
-  //    if (data[0][1] !== null && data[1][1] !== null) {
-  //      setUniversity(data[0][1].toString())
-  //      setGroup(data[1][1].toString())
-  //    }
-  //  } catch (error: any) {
-  //    console.log('Ошибка при загрузке данных из кэша', error.message)
-  //  }
-  //}
+  const fetchData = async () => {
+    try {
+      const response = await axios.get('http://localhost:3000/api/lessons/byGroup/' + route.params.group.id_group)
+      console.log('Загружено расписание для группы ' + route.params.group.title + '. ID: ' + route.params.group.id_group)
+      dispatch(setUserSchedule(response.data))
+      console.log('Расписание загружено с сервера')
+    } catch (error: any) {
+      console.log('Ошибка при выполнении запроса:', error)
+    }
+  }
 
-  const loadAfterChange = async () => {
+  const loadAfterChange = () => {
     try {
       dispatch(setUserUniversity(route.params.university_title))
       dispatch(setUserGroup(route.params.group.title))
-      //const newGroupId = ()
-      //await AsyncStorage.multiSet([['user_university', university], ['user_group', group], ['user_id_group', newGroupId]])
       dispatch(setUserIdGroup(route.params.group.id_group.toString()))
+      fetchData()
     } catch (error: any) {
       console.log('Ошибка при загрузке данных из кэша', error.message)
     }
   }
 
   useEffect(() => {
-    //loadData()
-  }, [isVisible])
-
-  useFocusEffect(() => {
     if (route.params) {
       loadAfterChange()
-    } else {
-      //loadData()
     }
-  })
+  }, [isVisible, route.params])
 
   return (
     <View style={styles.container}>

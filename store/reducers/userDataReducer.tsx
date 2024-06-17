@@ -1,9 +1,13 @@
 import { createSlice } from "@reduxjs/toolkit";
+import { CacheSchema } from "../../components/types";
 
-const initialState = {
+const initialState: CacheSchema = {
   user_university: 'Университет не выбран',
   user_group: 'не выбрана',
-  user_schedule: {},
+  user_schedule: {
+    mainSchedule: [],
+    lessonsBySubgroups: {},
+  },
   user_id_group: '',
 }
 

@@ -25,7 +25,7 @@ export default function ScreenUniversities({ navigation, route }: ScreenUniversi
       setUniversities(response.data)
     }
     catch (error: any) {
-      console.error('Ошибка при выполнении запроса:', error.message)
+      console.error('Ошибка при выполнении запроса:', error)
     }
   }
 

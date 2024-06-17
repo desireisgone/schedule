@@ -57,7 +57,17 @@ export type StackParamList = {
   }
 }
 
-
+export type CacheSchema = {
+  user_university: string;
+  user_group: string;
+  user_id_group: string;
+  user_schedule: {
+    mainSchedule: LessonType[][],
+    lessonsBySubgroups: {
+      [key: string]: LessonType[],
+    },
+  },
+}
 
 export type ScreenFacultiesProps = StackScreenProps<StackParamList, 'Faculties'>
 export type ScreenUniversitiesProps = StackScreenProps<StackParamList, 'Universities'>
